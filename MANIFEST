@@ -7,13 +7,13 @@ META.yml
 Makefile.PL
 README.html
 README.pod
+corpus/dist/README
+corpus/dist/dist.ini
+corpus/dist/lib/DZPA/Main.pm
 dist.ini
 lib/Dist/Zilla/Plugin/PrereqsClean.pm
 t/00-compile.t
 t/000-report-versions-tiny.t
-t/dist/README
-t/dist/dist.ini
-t/dist/lib/DZPA/Main.pm
 t/prereqsclean.t
 weaver.ini
 xt/author/test-eol.t

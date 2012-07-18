@@ -12,13 +12,6 @@ my %WriteMakefileArgs = (
   "ABSTRACT" => "Automatically cleans up the mess from other Prereq modules",
   "AUTHOR" => "Brendan Byrd <BBYRD\@CPAN.org>",
   "BUILD_REQUIRES" => {
-    "Acme::Prereq::A" => 0,
-    "Acme::Prereq::B" => 0,
-    "Acme::Prereq::BigDistro" => "0.01",
-    "Acme::Prereq::None" => 0,
-    "DZPA::NotInDist" => 0,
-    "DZPA::Skip::Blah" => 0,
-    "Shell" => 0,
     "Test::DZil" => 0,
     "YAML::Tiny" => 0
   },
@@ -31,6 +24,7 @@ my %WriteMakefileArgs = (
     "Dist::Zilla::Role::PrereqSource" => 0,
     "MetaCPAN::API" => 0,
     "Moose" => 0,
+    "MooseX::Types" => 0,
     "sanity" => 0
   },
   "VERSION" => "0.9",

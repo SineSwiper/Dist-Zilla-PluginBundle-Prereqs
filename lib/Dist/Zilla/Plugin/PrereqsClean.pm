@@ -6,6 +6,9 @@ our $VERSION = '0.9'; # VERSION
 use sanity;
 
 use Moose;
+use MooseX::Types -declare => ['RemovalLevelInt'];
+use MooseX::Types::Moose qw/Int/;
+
 use MetaCPAN::API;
 use Module::CoreList;
 use List::Util qw(min max);
@@ -30,9 +33,14 @@ use constant {
    RL_DIST_ALL      => 3,
 };
 
+subtype RemovalLevelInt,
+   as Int,
+   where   { $_ >= RL_NONE && $_ <= RL_DIST_ALL },
+   message { "removal_level should be between ".(RL_NONE)." and ".(RL_DIST_ALL) };   
+
 has removal_level => (
-   is  => 'ro',
-   isa => 'Bool',
+   is      => 'ro',
+   isa     => RemovalLevelInt,
    default => RL_DIST_NO_SPLIT,
 );
 

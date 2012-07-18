@@ -1,8 +1,6 @@
 use sanity;
 use Test::More 0.88;
  
-use lib 't/lib';
- 
 use Test::DZil;
 use YAML::Tiny;
  
@@ -13,7 +11,7 @@ sub build_meta {
 }
  
 my $tzil = Builder->from_config(
-   { dist_root => 't/dist' },
+   { dist_root => 'corpus/dist' },
    { },
 );
  
@@ -49,7 +47,7 @@ is_deeply(
 # Okay, add in the PrereqsClean stuff
 for my $rl (0 .. 3) {
    $tzil = Builder->from_config(
-      { dist_root => 't/dist' },
+      { dist_root => 'corpus/dist' },
       {
          add_files => {
             'source/dist.ini' => simple_ini(
