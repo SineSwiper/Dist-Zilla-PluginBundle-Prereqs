@@ -49,9 +49,18 @@ sub pmver {
     return sprintf('%-45s => %-10s%-15s%s', $module, $pmver, $wanted, "\n");
 }
 
+eval { $v .= pmver('Acme::Prereq::A','any version') };
+eval { $v .= pmver('Acme::Prereq::B','any version') };
+eval { $v .= pmver('Acme::Prereq::BigDistro','0.01') };
+eval { $v .= pmver('Acme::Prereq::None','any version') };
+eval { $v .= pmver('DZPA::NotInDist','any version') };
+eval { $v .= pmver('DZPA::Skip::Blah','any version') };
 eval { $v .= pmver('Dist::Zilla::Role::PrereqSource','any version') };
 eval { $v .= pmver('MetaCPAN::API','any version') };
 eval { $v .= pmver('Moose','any version') };
+eval { $v .= pmver('Shell','any version') };
+eval { $v .= pmver('Test::DZil','any version') };
+eval { $v .= pmver('YAML::Tiny','any version') };
 eval { $v .= pmver('sanity','any version') };
 
 

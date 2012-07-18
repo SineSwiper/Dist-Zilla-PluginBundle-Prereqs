@@ -11,7 +11,17 @@ use ExtUtils::MakeMaker 6.30;
 my %WriteMakefileArgs = (
   "ABSTRACT" => "Automatically cleans up the mess from other Prereq modules",
   "AUTHOR" => "Brendan Byrd <BBYRD\@CPAN.org>",
-  "BUILD_REQUIRES" => {},
+  "BUILD_REQUIRES" => {
+    "Acme::Prereq::A" => 0,
+    "Acme::Prereq::B" => 0,
+    "Acme::Prereq::BigDistro" => "0.01",
+    "Acme::Prereq::None" => 0,
+    "DZPA::NotInDist" => 0,
+    "DZPA::Skip::Blah" => 0,
+    "Shell" => 0,
+    "Test::DZil" => 0,
+    "YAML::Tiny" => 0
+  },
   "CONFIGURE_REQUIRES" => {},
   "DISTNAME" => "Dist-Zilla-Plugin-PrereqsClean",
   "EXE_FILES" => [],
