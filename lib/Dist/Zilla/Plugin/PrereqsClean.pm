@@ -316,7 +316,8 @@ of deprecatedE<sol>removed modules from core Perl.
 =item *
 
 B<Level 1> = This is the "core only" removal level, which adds support to remove
-"dual-life" (CPAN+Perl) core modules.
+"dual-life" (CPAN+Perl) core modules, if the minimum version is covered in the existing
+version of Perl.
 
 =item *
 
