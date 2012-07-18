@@ -30,12 +30,18 @@ my %wanted = (
    'Acme::Prereq::BigDistro::Deeper::A' => '0.01',
    'Acme::Prereq::BigDistro::Deeper::B' => 0,
    'Acme::Prereq::None'                 => 0,
-   'DZPA::NotInDist'                    => 0,
-   'Module::Load'                       => '0.12',
-   'Shell'                              => 0,
-   'mro'                                => '1.01',
-   'strict'                             => 0,
-   'warnings'                           => 0,
+
+   'DZPA::NotInDist'  => 0,
+
+   'Module::Metadata' => 0,
+   'Module::Load'     => '0.12',
+   'Shell'            => 0,
+
+   'mro'              => '1.01',
+   'strict'           => 0,
+   'warnings'         => 0,
+  
+   'perl'             => '5.008',
 );
  
 is_deeply(
@@ -69,13 +75,21 @@ for my $rl (0 .. 3) {
    for ($rl) {
       when (0) {
          # only Perl elevation
-         
-         ### FIXME: Perl ###
+         $wanted{'perl'} = '5.010001';
          delete $wanted{'mro'};
       }
       when (1) {
          # other core modules
-         delete $wanted{'Module::Load'};
+         delete $wanted{$_} for (qw{Module::Load strict warnings});
+      }
+      when (2) {
+         # Multiple modules within a distro (split protection)
+         delete $wanted{'Acme::Prereq::BigDistro::'.$_} for (qw{B Deeper::A Deeper::B});
+      }
+      when (3) {
+         # Multiple modules within a distro (no split protection)
+         delete $wanted{'Acme::Prereq::BigDistro::'.$_} for (qw{B Deeper::A Deeper::B});
+         delete $wanted{'Acme::Prereq::AnotherNS::'.$_} for (qw{B C Deeper::B Deeper::C});
       }
    }
    

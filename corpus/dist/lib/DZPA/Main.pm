@@ -17,6 +17,10 @@ use mro 1.01;
 # the above mro -> Perl elevation
 use Module::Load 0.12;
 
+# modern core "dual-life" module that is too high a version
+# to be removed
+use Module::Metadata;
+
 # core deprecated module
 # (or removed; same result either way)
 use Shell;
