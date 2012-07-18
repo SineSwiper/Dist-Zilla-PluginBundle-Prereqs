@@ -23,7 +23,7 @@ has minimum_perl => (
    }
 );
 
-use constant => {
+use constant {
    RL_NONE          => 0,
    RL_CORE_ONLY     => 1,
    RL_DIST_NO_SPLIT => 2,
