@@ -171,7 +171,7 @@ sub register_prereqs {
       
       # Look through the collected distro lists and figure out which should be removed
       $self->logger->set_prefix("{Pass 2.2: Distros} ");
-      my @distros = map { [ $_, @{$distro_mods->{$distro}} ] } sort keys %distro_list;
+      my @distros = map { [ $_, @{$distro_mods->{$_}} ] } sort keys %distro_list;
       while (my $distro_pair = shift @distros) {
          my $distro = shift @$distro_pair;
          my @modules = sort { length($a) <=> length($b) } @$distro_pair;
