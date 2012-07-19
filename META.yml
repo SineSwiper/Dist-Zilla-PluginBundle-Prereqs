@@ -20,6 +20,7 @@ prereqs:
   runtime:
     requires:
       Dist::Zilla::Role::PrereqSource: 0
+      List::AllUtils: 0
       MetaCPAN::API: 0
       Moose: 0
       MooseX::Types: 0
@@ -28,6 +29,7 @@ prereqs:
   test:
     requires:
       Test::DZil: 0
+      Test::Most: 0
       YAML::Tiny: 0
 provides:
   Dist::Zilla::Plugin::PrereqsClean:

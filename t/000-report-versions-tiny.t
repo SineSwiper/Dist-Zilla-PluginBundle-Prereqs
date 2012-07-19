@@ -50,10 +50,12 @@ sub pmver {
 }
 
 eval { $v .= pmver('Dist::Zilla::Role::PrereqSource','any version') };
+eval { $v .= pmver('List::AllUtils','any version') };
 eval { $v .= pmver('MetaCPAN::API','any version') };
 eval { $v .= pmver('Moose','any version') };
 eval { $v .= pmver('MooseX::Types','any version') };
 eval { $v .= pmver('Test::DZil','any version') };
+eval { $v .= pmver('Test::Most','any version') };
 eval { $v .= pmver('YAML::Tiny','any version') };
 eval { $v .= pmver('sanity','any version') };
 

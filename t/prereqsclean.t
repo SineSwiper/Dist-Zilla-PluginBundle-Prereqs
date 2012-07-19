@@ -1,5 +1,5 @@
 use sanity;
-use Test::More 0.88;
+use Test::Most;
  
 use Test::DZil;
 use YAML::Tiny;
@@ -85,13 +85,15 @@ for my $rl (0 .. 3) {
       when (2) {
          # Multiple modules within a distro (split protection)
          delete $wanted{'Acme::Prereq::BigDistro::'.$_} for (qw{B Deeper::A Deeper::B});
+         $wanted{'Acme::Prereq::BigDistro'} = '0.01';
       }
       when (3) {
          # Multiple modules within a distro (no split protection)
-         delete $wanted{'Acme::Prereq::BigDistro::'.$_} for (qw{B Deeper::A Deeper::B});
          delete $wanted{'Acme::Prereq::AnotherNS::'.$_} for (qw{B C Deeper::B Deeper::C});
       }
    }
+   
+   explain $meta->{prereqs}{runtime}{requires};
    
    is_deeply(
       $meta->{prereqs}{runtime}{requires},

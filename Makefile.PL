@@ -13,6 +13,7 @@ my %WriteMakefileArgs = (
   "AUTHOR" => "Brendan Byrd <BBYRD\@CPAN.org>",
   "BUILD_REQUIRES" => {
     "Test::DZil" => 0,
+    "Test::Most" => 0,
     "YAML::Tiny" => 0
   },
   "CONFIGURE_REQUIRES" => {},
@@ -22,6 +23,7 @@ my %WriteMakefileArgs = (
   "NAME" => "Dist::Zilla::Plugin::PrereqsClean",
   "PREREQ_PM" => {
     "Dist::Zilla::Role::PrereqSource" => 0,
+    "List::AllUtils" => 0,
     "MetaCPAN::API" => 0,
     "Moose" => 0,
     "MooseX::Types" => 0,
