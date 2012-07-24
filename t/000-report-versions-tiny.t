@@ -49,9 +49,10 @@ sub pmver {
     return sprintf('%-45s => %-10s%-15s%s', $module, $pmver, $wanted, "\n");
 }
 
+eval { $v .= pmver('Dist::Zilla::Role::MetaCPANInterfacer','any version') };
+eval { $v .= pmver('Dist::Zilla::Role::PluginBundle::Merged','any version') };
 eval { $v .= pmver('Dist::Zilla::Role::PrereqSource','any version') };
 eval { $v .= pmver('List::AllUtils','any version') };
-eval { $v .= pmver('MetaCPAN::API','any version') };
 eval { $v .= pmver('Moose','any version') };
 eval { $v .= pmver('MooseX::Types','any version') };
 eval { $v .= pmver('Test::DZil','any version') };

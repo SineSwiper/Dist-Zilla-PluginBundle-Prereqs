@@ -9,12 +9,12 @@ use Moose;
 use MooseX::Types -declare => ['RemovalLevelInt'];
 use MooseX::Types::Moose qw/Int/;
 
-use MetaCPAN::API;
 use Module::CoreList;
 use List::AllUtils qw(min max part);
 use version 0.77;
 
 with 'Dist::Zilla::Role::PrereqSource';
+with 'Dist::Zilla::Role::MetaCPANInterfacer';
 
 has minimum_perl => (
    is      => 'ro',
@@ -159,43 +159,49 @@ sub register_prereqs {
 
          # potentials for culling
          next unless $self->removal_level >= RL_DIST_NO_SPLIT;
-         next if $module_distro{$module};
-         my ($distro, @modules) = $self->_mcpan_module2distro($module, 1);
-         next unless ($distro || @modules <= 1);
-         
-         $distro_mods->{$distro} = [ @modules ];
-         $module_distro{$_} = $distro for @modules;
+         unless ($module_distro{$module}) {
+            my ($distro, @modules) = $self->_mcpan_module2distro($module, 1);
+            next unless ($distro && @modules > 1);  # must exist in CPAN and be a 2+ module distro
+            $module_distro{$_} = $distro for @modules;  # contains all modules vs. $distro_mods
+         }
+
+         my $distro = $module_distro{$module};
+         $distro_mods->{$distro} //= {};  # hashes for uniqueness
+         $distro_mods->{$distro}{$module} = 1;  
          $distro_list{$distro} = 1;
       }
       next unless ($self->removal_level >= RL_DIST_NO_SPLIT);
       
       # Look through the collected distro lists and figure out which should be removed
       $self->logger->set_prefix("{Pass 2.2: Distros} ");
-      my @distros = map { [ $_, @{$distro_mods->{$_}} ] } sort keys %distro_list;
+      my @distros = map { [ $_, keys %{$distro_mods->{$_}} ] } sort keys %distro_list;
       while (my $distro_pair = shift @distros) {
          my $distro = shift @$distro_pair;
          my @modules = sort { length($a) <=> length($b) } @$distro_pair;
+         my @dmods   = grep { $module_distro{$_} eq $distro } keys %module_distro;
          
          # hopefully, we can find a common name to use
          (my $main_module = $distro) =~ s/-/::/g;
-         $main_module = $modules[0] unless (@modules ~~ $main_module);
+         $main_module = $modules[0] unless ($main_module ~~ @dmods);
+         $self->log_debug('MAIN = '.$main_module);
+         $self->log_debug('   '.$_) for @modules;
          
          # remove any obvious split potentials
          if ($self->removal_level <= RL_DIST_NO_SPLIT) {
-            my ($non_ns, $new_mods) = part { /^\Q$main_module\E::/ } @modules;
-            @modules = @$new_mods;
+            my ($non_ns, $new_mods) = part { /^\Q$main_module\E(?:\:\:|$)/ } @modules;
+            @modules = $new_mods ? @$new_mods : ();
             
             # Add split modules to a "new" distro for further processing
             # (This will clean up both Dist::A::* and Dist::B::* from Dist-A)
-            unshift @distros, [ $distro, @$non_ns ] if (@$non_ns && @modules);
+            unshift @distros, [ $distro, @$non_ns ] if ($non_ns && $new_mods);
             
             if (@modules <= 1) {
-               $self->log_debug("Skipping distro $distro; only has ".scalar @modules." module left since split comparison");
+               $self->log_debug("Skipping module $main_module; distro only has ".scalar @modules." module left since split comparison");
                next;
             }
          }
          
-         my $maxver = max map { version->parse( $req->requirements_for_module($_) ) } @modules;
+         my $maxver = max map { version->parse( $req->requirements_for_module($_) || 0 ) } @modules;
          $maxver ||= 0;
 
          $self->log_debug("Replacing modules from common distro $distro:");
@@ -207,7 +213,6 @@ sub register_prereqs {
    }
 }
 
-my $mcpan = MetaCPAN::API->new();
 sub _mcpan_module2distro {
    my ($self, $module, $get_module_list) = @_;
    
@@ -215,7 +220,7 @@ sub _mcpan_module2distro {
    ### XXX: This should be replaced with a ->file() method when those
    ### two pull requests of mine are put into CPAN...
    $self->log_debug("Checking module $module via MetaCPAN");
-   my $details = $mcpan->fetch("file/_search",
+   my $details = $self->mcpan->fetch("file/_search",
       q      => 'module.name:"'.$module.'" AND status:latest AND module.authorized:true',
       fields => 'distribution,release',
       size   => 1,
@@ -228,7 +233,7 @@ sub _mcpan_module2distro {
    return $distro unless $get_module_list;
    
    $self->log_debug("Checking release $release for module list via MetaCPAN");
-   $details = $mcpan->fetch("file/_search",
+   $details = $self->mcpan->fetch("file/_search",
       q      => 'release:"'.$release.'" AND module.name:* AND module.authorized:true',
       fields => 'module.name',
       size   => 500,
@@ -237,12 +242,8 @@ sub _mcpan_module2distro {
       $self->log("??? MetaCPAN can't find release $release (even after finding it earlier)!");
       return undef;
    }
-   
-   my @modules = map {
-      my $h = $_;
-      map { $_->{name} } @{ $h->{fields}{module} };
-   } @{ $details->{hits}{hits} };
-   
+
+   my @modules = map { $_->{fields}{'module.name'} } @{ $details->{hits}{hits} };
    return ($distro, @modules);
 }
 
@@ -424,7 +425,7 @@ L<Dist::Zilla::Plugin::LatestPrereqs|LatestPrereqs>, L<Dist::Zilla::Plugin::Dark
 
 =head1 AVAILABILITY
 
-The project homepage is L<https://github.com/SineSwiper/Dist-Zilla-Plugin-PrereqsClean/wiki>.
+The project homepage is L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-Prereqs/wiki>.
 
 The latest version of this module is available from the Comprehensive Perl
 Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN
@@ -453,7 +454,7 @@ You can connect to the server at 'irc.perl.org' and join this channel: #distzill
 
 =head2 Bugs / Feature Requests
 
-Please report any bugs or feature requests via L<L<https://github.com/SineSwiper/Dist-Zilla-Plugin-PrereqsClean/issues>|GitHub>.
+Please report any bugs or feature requests via L<L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-Prereqs/issues>|GitHub>.
 
 =head1 AUTHOR
 

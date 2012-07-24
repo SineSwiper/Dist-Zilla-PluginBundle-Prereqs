@@ -11,7 +11,9 @@ corpus/dist/README
 corpus/dist/dist.ini
 corpus/dist/lib/DZPA/Main.pm
 dist.ini
+lib/Dist/Zilla/Plugin/MinimumPrereqs.pm
 lib/Dist/Zilla/Plugin/PrereqsClean.pm
+lib/Dist/Zilla/PluginBundle/Prereqs.pm
 t/00-compile.t
 t/000-report-versions-tiny.t
 t/prereqsclean.t

@@ -1,12 +1,13 @@
 use sanity;
-use Test::Most;
+use Test::Most tests => 10;
  
 use Test::DZil;
 use YAML::Tiny;
  
 sub build_meta {
    my $tzil = shift;
-   $tzil->build;
+   $tzil->chrome->logger->set_debug(1);
+   lives_ok(sub { $tzil->build }, 'built distro') || explain $tzil->log_messages;
    YAML::Tiny->new->read($tzil->tempdir->file('build/META.yml'))->[0];
 }
  
@@ -70,6 +71,7 @@ for my $rl (0 .. 3) {
     
    # check found prereqs
    $meta = build_meta($tzil);
+   #explain $tzil->log_messages;
    
    # Keep removing stuff as we go...
    for ($rl) {
@@ -85,21 +87,19 @@ for my $rl (0 .. 3) {
       when (2) {
          # Multiple modules within a distro (split protection)
          delete $wanted{'Acme::Prereq::BigDistro::'.$_} for (qw{B Deeper::A Deeper::B});
+         delete $wanted{'Acme::Prereq::AnotherNS::'.$_} for (qw{B C Deeper::B Deeper::C});
          $wanted{'Acme::Prereq::BigDistro'} = '0.01';
+         $wanted{'Acme::Prereq::AnotherNS'} = '0.01';
       }
       when (3) {
          # Multiple modules within a distro (no split protection)
-         delete $wanted{'Acme::Prereq::AnotherNS::'.$_} for (qw{B C Deeper::B Deeper::C});
+         delete $wanted{'Acme::Prereq::AnotherNS'};
       }
    }
-   
-   explain $meta->{prereqs}{runtime}{requires};
    
    is_deeply(
       $meta->{prereqs}{runtime}{requires},
       \%wanted,
       "PrereqsClean @ removal_level $rl",
-   );
+   ) || explain $meta->{prereqs}{runtime}{requires};
 }
- 
-done_testing;
