@@ -1,12 +1,13 @@
 use sanity;
-use Test::More 0.88;
+use Test::Most tests => 10;
  
 use Test::DZil;
 use YAML::Tiny;
  
 sub build_meta {
    my $tzil = shift;
-   $tzil->build;
+   $tzil->chrome->logger->set_debug(1);
+   lives_ok(sub { $tzil->build }, 'built distro') || explain $tzil->log_messages;
    YAML::Tiny->new->read($tzil->tempdir->file('build/META.yml'))->[0];
 }
  
@@ -30,12 +31,18 @@ my %wanted = (
    'Acme::Prereq::BigDistro::Deeper::A' => '0.01',
    'Acme::Prereq::BigDistro::Deeper::B' => 0,
    'Acme::Prereq::None'                 => 0,
-   'DZPA::NotInDist'                    => 0,
-   'Module::Load'                       => '0.12',
-   'Shell'                              => 0,
-   'mro'                                => '1.01',
-   'strict'                             => 0,
-   'warnings'                           => 0,
+
+   'DZPA::NotInDist'  => 0,
+
+   'Module::Metadata' => 0,
+   'Module::Load'     => '0.12',
+   'Shell'            => 0,
+
+   'mro'              => '1.01',
+   'strict'           => 0,
+   'warnings'         => 0,
+  
+   'perl'             => '5.008',
 );
  
 is_deeply(
@@ -64,18 +71,29 @@ for my $rl (0 .. 3) {
     
    # check found prereqs
    $meta = build_meta($tzil);
+   #explain $tzil->log_messages;
    
    # Keep removing stuff as we go...
    for ($rl) {
       when (0) {
          # only Perl elevation
-         
-         ### FIXME: Perl ###
+         $wanted{'perl'} = '5.010001';
          delete $wanted{'mro'};
       }
       when (1) {
          # other core modules
-         delete $wanted{'Module::Load'};
+         delete $wanted{$_} for (qw{Module::Load strict warnings});
+      }
+      when (2) {
+         # Multiple modules within a distro (split protection)
+         delete $wanted{'Acme::Prereq::BigDistro::'.$_} for (qw{B Deeper::A Deeper::B});
+         delete $wanted{'Acme::Prereq::AnotherNS::'.$_} for (qw{B C Deeper::B Deeper::C});
+         $wanted{'Acme::Prereq::BigDistro'} = '0.01';
+         $wanted{'Acme::Prereq::AnotherNS'} = '0.01';
+      }
+      when (3) {
+         # Multiple modules within a distro (no split protection)
+         delete $wanted{'Acme::Prereq::AnotherNS'};
       }
    }
    
@@ -83,7 +101,5 @@ for my $rl (0 .. 3) {
       $meta->{prereqs}{runtime}{requires},
       \%wanted,
       "PrereqsClean @ removal_level $rl",
-   );
+   ) || explain $meta->{prereqs}{runtime}{requires};
 }
- 
-done_testing;

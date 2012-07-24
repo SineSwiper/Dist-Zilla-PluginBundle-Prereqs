@@ -9,12 +9,12 @@ use Moose;
 use MooseX::Types -declare => ['RemovalLevelInt'];
 use MooseX::Types::Moose qw/Int/;
 
-use MetaCPAN::API;
 use Module::CoreList;
-use List::Util qw(min max);
+use List::AllUtils qw(min max part);
 use version 0.77;
 
 with 'Dist::Zilla::Role::PrereqSource';
+with 'Dist::Zilla::Role::MetaCPANInterfacer';
 
 has minimum_perl => (
    is      => 'ro',
@@ -49,8 +49,9 @@ sub register_prereqs {
    my $zilla   = $self->zilla;
    my $prereqs = $zilla->prereqs->cpan_meta_prereqs;
    
+   # consolidate Perl versions between phases (since you can't upgrade Perl in CPAN, etc., anyway)
    my $default_perlver = version->parse( $self->minimum_perl );
-   foreach my $phase (qw(runtime configure build)) {
+   foreach my $phase (qw(configure runtime build)) {  # skip test, since it's a non-critical path
       my $req = $prereqs->requirements_for($phase, 'requires');
       my $phase_perlver = version->parse( $req->requirements_for_module('perl') );
       $default_perlver = max($phase_perlver, $default_perlver) if ($phase_perlver);
@@ -58,10 +59,10 @@ sub register_prereqs {
 
    my $latest_perlver = version->parse( (reverse sort keys %Module::CoreList::released)[0] );
    $self->log_debug([ 'Default Perl %s, Latest Perl %s', $default_perlver->normal, $latest_perlver->normal ]);
-
+   
    # Look for specific things that would change the Perl version
    $self->logger->set_prefix("{Pass 1: Core} ");
-   foreach my $phase (qw(runtime configure build test)) {
+   foreach my $phase (qw(configure runtime build test)) {  # phases ordered by importance
       $self->log_debug("Phase '$phase'");
       my $req = $prereqs->requirements_for($phase, 'requires');
       my $perlver = version->parse( $req->requirements_for_module('perl') ) || $default_perlver;
@@ -82,8 +83,7 @@ sub register_prereqs {
          if ( my $release = version->parse( Module::CoreList->first_release($module, $modver) ) ) {
             
             if ($release > $perlver) {
-               my $distro = $self->_mcpan_module2distro($module);
-               next unless ($distro);
+               my $distro = $self->_mcpan_module2distro($module) || next;
 
                if ($distro eq 'perl') {
                   $self->log([ 'Module %s is only found in core Perl; adding Perl %s requirement', $modver_log, $release->normal ]);
@@ -106,12 +106,14 @@ sub register_prereqs {
    
    # Okay, clean up the remaining Perl core modules (if any), and any non-cores
    my $distro_mods = {};
-   foreach my $phase (qw(runtime configure build test)) {
+   my %module_distro;
+   foreach my $phase (qw(configure runtime build test)) {
       $self->logger->set_prefix("{Pass 2.1: Modules} ");
       $self->log_debug("Phase '$phase'");
       my $req = $prereqs->requirements_for($phase, 'requires');
-      $distro_mods = {} if ($phase eq 'test');
+      
       my %distro_list;  # only saved this phase vs. $distro_mods
+      # the rest build up modules as they go, since the phase order works according to CPAN::Meta::Spec processing
 
       my $perlver = version->parse( $req->requirements_for_module('perl') );
       # Do some general cleanup of the 'perl' version specifically
@@ -156,41 +158,50 @@ sub register_prereqs {
          }
 
          # potentials for culling
-         next unless ($self->removal_level >= RL_DIST_NO_SPLIT);
-         my $distro = $self->_mcpan_module2distro($module) || next;
-         
-         $distro_mods->{$distro} //= {};
-         $distro_mods->{$distro}{$module} = 1;
+         next unless $self->removal_level >= RL_DIST_NO_SPLIT;
+         unless ($module_distro{$module}) {
+            my ($distro, @modules) = $self->_mcpan_module2distro($module, 1);
+            next unless ($distro && @modules > 1);  # must exist in CPAN and be a 2+ module distro
+            $module_distro{$_} = $distro for @modules;  # contains all modules vs. $distro_mods
+         }
+
+         my $distro = $module_distro{$module};
+         $distro_mods->{$distro} //= {};  # hashes for uniqueness
+         $distro_mods->{$distro}{$module} = 1;  
          $distro_list{$distro} = 1;
       }
       next unless ($self->removal_level >= RL_DIST_NO_SPLIT);
       
       # Look through the collected distro lists and figure out which should be removed
       $self->logger->set_prefix("{Pass 2.2: Distros} ");
-      foreach my $distro (sort keys %distro_list) {
-         my @modules = sort { length($a) <=> length($b) } keys %{$distro_mods->{$distro}};
-         if (@modules <= 1) {
-            $self->log_debug("Skipping distro $distro; only has one module requirement");
-            next;
-         }
+      my @distros = map { [ $_, keys %{$distro_mods->{$_}} ] } sort keys %distro_list;
+      while (my $distro_pair = shift @distros) {
+         my $distro = shift @$distro_pair;
+         my @modules = sort { length($a) <=> length($b) } @$distro_pair;
+         my @dmods   = grep { $module_distro{$_} eq $distro } keys %module_distro;
          
          # hopefully, we can find a common name to use
-         (my $dmodule = $distro) =~ s/-/::/g;
-         my $details = $self->_mcpan_module2distro($dmodule);
-         my $main_module = $dmodule if ($details);
-         $main_module ||= $modules[0];
+         (my $main_module = $distro) =~ s/-/::/g;
+         $main_module = $modules[0] unless ($main_module ~~ @dmods);
+         $self->log_debug('MAIN = '.$main_module);
+         $self->log_debug('   '.$_) for @modules;
          
          # remove any obvious split potentials
          if ($self->removal_level <= RL_DIST_NO_SPLIT) {
-            (my $parent_module = $main_module) =~ s/::\w+$//;
-            @modules = grep { /^\Q$dmodule\E|^\Q$parent_module\E/ } @modules;
+            my ($non_ns, $new_mods) = part { /^\Q$main_module\E(?:\:\:|$)/ } @modules;
+            @modules = $new_mods ? @$new_mods : ();
+            
+            # Add split modules to a "new" distro for further processing
+            # (This will clean up both Dist::A::* and Dist::B::* from Dist-A)
+            unshift @distros, [ $distro, @$non_ns ] if ($non_ns && $new_mods);
+            
             if (@modules <= 1) {
-               $self->log_debug("Skipping distro $distro; only has ".scalar @modules." module left since split comparison");
+               $self->log_debug("Skipping module $main_module; distro only has ".scalar @modules." module left since split comparison");
                next;
             }
          }
          
-         my $maxver = max map { version->parse( $req->requirements_for_module($_) ) } @modules;
+         my $maxver = max map { version->parse( $req->requirements_for_module($_) || 0 ) } @modules;
          $maxver ||= 0;
 
          $self->log_debug("Replacing modules from common distro $distro:");
@@ -202,24 +213,38 @@ sub register_prereqs {
    }
 }
 
-my $mcpan = MetaCPAN::API->new();
 sub _mcpan_module2distro {
-   my ($self, $module) = @_;
+   my ($self, $module, $get_module_list) = @_;
    
    # faster and less bulky than a straight module/$module pull
    ### XXX: This should be replaced with a ->file() method when those
    ### two pull requests of mine are put into CPAN...
    $self->log_debug("Checking module $module via MetaCPAN");
-   my $details = $mcpan->fetch("file/_search", 
+   my $details = $self->mcpan->fetch("file/_search",
       q      => 'module.name:"'.$module.'" AND status:latest AND module.authorized:true',
-      fields => 'distribution',
+      fields => 'distribution,release',
       size   => 1,
    );
    unless ($details && $details->{hits}{total}) {
       $self->log("??? MetaCPAN can't even find module $module!");
       return undef;
    }
-   return $details->{hits}{hits}[0]{fields}{distribution};
+   my ($distro, $release) = @{ $details->{hits}{hits}[0]{fields} }{qw(distribution release)};
+   return $distro unless $get_module_list;
+   
+   $self->log_debug("Checking release $release for module list via MetaCPAN");
+   $details = $self->mcpan->fetch("file/_search",
+      q      => 'release:"'.$release.'" AND module.name:* AND module.authorized:true',
+      fields => 'module.name',
+      size   => 500,
+   );
+   unless ($details && $details->{hits}{total}) {
+      $self->log("??? MetaCPAN can't find release $release (even after finding it earlier)!");
+      return undef;
+   }
+
+   my @modules = map { $_->{fields}{'module.name'} } @{ $details->{hits}{hits} };
+   return ($distro, @modules);
 }
 
 __PACKAGE__->meta->make_immutable;
