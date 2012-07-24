@@ -193,7 +193,10 @@ sub register_prereqs {
             
             # Add split modules to a "new" distro for further processing
             # (This will clean up both Dist::A::* and Dist::B::* from Dist-A)
-            unshift @distros, [ $distro, @$non_ns ] if ($non_ns && $new_mods);
+            if ($non_ns && $new_mods) {
+               @$non_ns = sort { length($a) <=> length($b) } @$non_ns;
+               unshift @distros, [ $non_ns->[0], @$non_ns ];
+            }
             
             if (@modules <= 1) {
                $self->log_debug("Skipping module $main_module; distro only has ".scalar @modules." module left since split comparison");
