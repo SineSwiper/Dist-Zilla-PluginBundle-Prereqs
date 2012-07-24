@@ -183,8 +183,6 @@ sub register_prereqs {
          # hopefully, we can find a common name to use
          (my $main_module = $distro) =~ s/-/::/g;
          $main_module = $modules[0] unless ($main_module ~~ @dmods);
-         $self->log_debug('MAIN = '.$main_module);
-         $self->log_debug('   '.$_) for @modules;
          
          # remove any obvious split potentials
          if ($self->removal_level <= RL_DIST_NO_SPLIT) {
