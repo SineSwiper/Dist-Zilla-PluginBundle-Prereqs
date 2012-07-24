@@ -33,7 +33,7 @@ use Acme::Prereq::None;
 
 # Modules that exist in CPAN with a similar namespace,
 # and they are on the same distribution
-use Acme::Prereq::BigDistro::Deeper::A 0.01;
+use Acme::Prereq::BigDistro::Deeper::A 0.02;
 use Acme::Prereq::BigDistro::Deeper::B;
 use Acme::Prereq::BigDistro::B;
 
