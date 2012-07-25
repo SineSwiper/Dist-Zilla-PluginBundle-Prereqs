@@ -1,7 +1,6 @@
 use sanity;
 use Test::Most tests => 4;
  
-use Devel::SimpleTrace;
 use Test::DZil;
 use YAML::Tiny;
  
@@ -73,13 +72,18 @@ $tzil = Builder->from_config(
 $meta = build_meta($tzil);
 
 # Refactor the %wanted hash
-$wanted{'Acme::Prereq::'.$_} = '0.01' for (
-   qw{A B None}, 
-   ( map { 'AnotherNS::'.$_ } (qw{B C Deeper::B Deeper::C}) ),
-   ( map { 'BigDistro::'.$_ } (qw{B   Deeper::A Deeper::B}) ),
+%wanted = (
+  'Acme::Prereq::A'            => '0.01',
+  'Acme::Prereq::AnotherNS'    => '0.02',
+  'Acme::Prereq::B'            => '0.01',
+  'Acme::Prereq::BigDistro'    => '0.01',
+  'Acme::Prereq::BigDistro::A' => '!= 0.00',
+  'Acme::Prereq::None'         => '0.01',
+  'DZPA::NotInDist'            => '0',
+  'Module::Metadata'           => '1.000000',
+  'Shell'                      => '0.72',
+  'perl'                       => '5.010001'
 );
-$wanted{'Acme::Prereq::AnotherNS'} = '0.02';
-$wanted{'Module::Metadata'} = '1.000000';
 
 is_deeply(
    $meta->{prereqs}{runtime}{requires},

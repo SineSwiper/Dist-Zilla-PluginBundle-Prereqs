@@ -12,7 +12,6 @@ my %WriteMakefileArgs = (
   "ABSTRACT" => "Automatically cleans up the mess from other Prereq modules",
   "AUTHOR" => "Brendan Byrd <BBYRD\@CPAN.org>",
   "BUILD_REQUIRES" => {
-    "Devel::SimpleTrace" => 0,
     "Test::DZil" => 0,
     "Test::Most" => 0,
     "YAML::Tiny" => 0
