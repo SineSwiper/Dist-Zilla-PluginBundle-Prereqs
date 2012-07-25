@@ -9,7 +9,7 @@ use Moose;
 use MooseX::Types -declare => ['RemovalLevelInt'];
 use MooseX::Types::Moose qw/Int/;
 
-use Module::CoreList;
+use Module::CoreList 2.69;  # (try to keep this one current)
 use List::AllUtils qw(min max part);
 use version 0.77;
 
@@ -183,8 +183,6 @@ sub register_prereqs {
          # hopefully, we can find a common name to use
          (my $main_module = $distro) =~ s/-/::/g;
          $main_module = $modules[0] unless ($main_module ~~ @dmods);
-         $self->log_debug('MAIN = '.$main_module);
-         $self->log_debug('   '.$_) for @modules;
          
          # remove any obvious split potentials
          if ($self->removal_level <= RL_DIST_NO_SPLIT) {
@@ -193,7 +191,10 @@ sub register_prereqs {
             
             # Add split modules to a "new" distro for further processing
             # (This will clean up both Dist::A::* and Dist::B::* from Dist-A)
-            unshift @distros, [ $distro, @$non_ns ] if ($non_ns && $new_mods);
+            if ($non_ns && $new_mods) {
+               @$non_ns = sort { length($a) <=> length($b) } @$non_ns;
+               unshift @distros, [ $non_ns->[0], @$non_ns ];
+            }
             
             if (@modules <= 1) {
                $self->log_debug("Skipping module $main_module; distro only has ".scalar @modules." module left since split comparison");

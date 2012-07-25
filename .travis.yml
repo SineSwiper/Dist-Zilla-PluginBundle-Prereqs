@@ -13,9 +13,11 @@ install:
    # Install the lowest possible required version for the dependencies
    - export OLD_CPANM_OPT=$PERL_CPANM_OPT
    - export PERL_CPANM_OPT='--mirror http://cpan.metacpan.org/ --mirror http://search.cpan.org/CPAN '$PERL_CPANM_OPT
+   - cpanm BBYRD/Dist-Zilla-Role-MetaCPANInterfacer-0.90.tar.gz
+   - cpanm BBYRD/Dist-Zilla-Role-PluginBundle-Merged-0.90.tar.gz
    - cpanm RJBS/Dist-Zilla-2.100880.tar.gz
    - cpanm DROLSKY/List-AllUtils-0.01.tar.gz
-   - cpanm XSAWYERX/MetaCPAN-API-0.02.tar.gz
+   - cpanm BINGOS/Module-CoreList-2.69.tar.gz
    - cpanm STEVAN/Moose-0.01.tar.gz
    - cpanm PHAYLON/MooseX-Types-0.01.tar.gz
    - cpanm BBYRD/sanity-0.91.tar.gz

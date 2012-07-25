@@ -44,6 +44,9 @@ use Acme::Prereq::AnotherNS::Deeper::B;
 use Acme::Prereq::AnotherNS::B;
 use Acme::Prereq::AnotherNS::C;
 
+# This only exists in 0.02
+use Acme::Prereq::AnotherNS;
+
 # imaginary DZPA module, not in CPAN
 use DZPA::NotInDist;
 
