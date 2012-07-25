@@ -9,7 +9,7 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "Automatically cleans up the mess from other Prereq modules",
+  "ABSTRACT" => "Useful Prereqs modules in a Dist::Zilla bundle",
   "AUTHOR" => "Brendan Byrd <BBYRD\@CPAN.org>",
   "BUILD_REQUIRES" => {
     "Test::DZil" => 0,
@@ -17,10 +17,10 @@ my %WriteMakefileArgs = (
     "YAML::Tiny" => 0
   },
   "CONFIGURE_REQUIRES" => {},
-  "DISTNAME" => "Dist-Zilla-Plugin-PrereqsClean",
+  "DISTNAME" => "Dist-Zilla-PluginBundle-Prereqs",
   "EXE_FILES" => [],
   "LICENSE" => "artistic_2",
-  "NAME" => "Dist::Zilla::Plugin::PrereqsClean",
+  "NAME" => "Dist::Zilla::PluginBundle::Prereqs",
   "PREREQ_PM" => {
     "Dist::Zilla::Role::MetaCPANInterfacer" => 0,
     "Dist::Zilla::Role::PluginBundle::Merged" => 0,
@@ -31,7 +31,7 @@ my %WriteMakefileArgs = (
     "MooseX::Types" => 0,
     "sanity" => 0
   },
-  "VERSION" => "0.9",
+  "VERSION" => "0.90",
   "test" => {
     "TESTS" => "t/*.t"
   }

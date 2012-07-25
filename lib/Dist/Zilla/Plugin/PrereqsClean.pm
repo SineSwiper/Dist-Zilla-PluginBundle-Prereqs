@@ -1,6 +1,6 @@
 package Dist::Zilla::Plugin::PrereqsClean;
 
-our $VERSION = '0.9'; # VERSION
+our $VERSION = '0.90'; # VERSION
 # ABSTRACT: Automatically cleans up the mess from other Prereq modules
 
 use sanity;
@@ -430,32 +430,7 @@ The project homepage is L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-
 
 The latest version of this module is available from the Comprehensive Perl
 Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN
-site near you, or see L<https://metacpan.org/module/Dist::Zilla::Plugin::PrereqsClean/>.
-
-=for :stopwords cpan testmatrix url annocpan anno bugtracker rt cpants kwalitee diff irc mailto metadata placeholders metacpan
-
-=head1 SUPPORT
-
-=head2 Internet Relay Chat
-
-You can get live help by using IRC ( Internet Relay Chat ). If you don't know what IRC is,
-please read this excellent guide: L<http://en.wikipedia.org/wiki/Internet_Relay_Chat>. Please
-be courteous and patient when talking to us, as we might be busy or sleeping! You can join
-those networks/channels and get help:
-
-=over 4
-
-=item *
-
-irc.perl.org
-
-You can connect to the server at 'irc.perl.org' and join this channel: #distzilla then talk to this person for help: SineSwiper.
-
-=back
-
-=head2 Bugs / Feature Requests
-
-Please report any bugs or feature requests via L<L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-Prereqs/issues>|GitHub>.
+site near you, or see L<https://metacpan.org/module/Dist::Zilla::PluginBundle::Prereqs/>.
 
 =head1 AUTHOR
 

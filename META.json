@@ -1,5 +1,5 @@
 {
-   "abstract" : "Automatically cleans up the mess from other Prereq modules",
+   "abstract" : "Useful Prereqs modules in a Dist::Zilla bundle",
    "author" : [
       "Brendan Byrd <BBYRD@CPAN.org>"
    ],
@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "Dist-Zilla-Plugin-PrereqsClean",
+   "name" : "Dist-Zilla-PluginBundle-Prereqs",
    "no_index" : {
       "directory" : [
          "t",
@@ -46,15 +46,15 @@
    "provides" : {
       "Dist::Zilla::Plugin::MinimumPrereqs" : {
          "file" : "lib/Dist/Zilla/Plugin/MinimumPrereqs.pm",
-         "version" : "0.9"
+         "version" : "0.90"
       },
       "Dist::Zilla::Plugin::PrereqsClean" : {
          "file" : "lib/Dist/Zilla/Plugin/PrereqsClean.pm",
-         "version" : "0.9"
+         "version" : "0.90"
       },
       "Dist::Zilla::PluginBundle::Prereqs" : {
          "file" : "lib/Dist/Zilla/PluginBundle/Prereqs.pm",
-         "version" : "0.9"
+         "version" : "0.90"
       }
    },
    "release_status" : "stable",
@@ -70,7 +70,7 @@
       },
       "x_irc" : "irc://irc.perl.org/#distzilla"
    },
-   "version" : "0.9",
+   "version" : "0.90",
    "x_Dist_Zilla" : {
       "plugins" : [
          {

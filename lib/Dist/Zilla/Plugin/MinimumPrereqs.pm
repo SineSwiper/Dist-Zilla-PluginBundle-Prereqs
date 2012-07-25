@@ -1,6 +1,6 @@
 package Dist::Zilla::Plugin::MinimumPrereqs;
 
-our $VERSION = '0.9'; # VERSION
+our $VERSION = '0.90'; # VERSION
 # ABSTRACT: Adjust blank prereqs to use the lowest version available
 
 use sanity;
@@ -175,7 +175,7 @@ The project homepage is L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-
 
 The latest version of this module is available from the Comprehensive Perl
 Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN
-site near you, or see L<https://metacpan.org/module/Dist::Zilla::Plugin::PrereqsClean/>.
+site near you, or see L<https://metacpan.org/module/Dist::Zilla::PluginBundle::Prereqs/>.
 
 =head1 AUTHOR
 
