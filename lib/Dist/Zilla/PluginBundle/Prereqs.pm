@@ -6,7 +6,7 @@ our $VERSION = '0.9'; # VERSION
 use sanity;
 use Moose;
 
-with 'Dist::Zilla::Role::PluginBundle::Merged';
+with 'Dist::Zilla::Role::PluginBundle::Merged' => { mv_plugins => ['AutoPrereqs'] };
  
 sub configure { shift->add_merged( qw[ AutoPrereqs MinimumPerl MinimumPrereqs PrereqsClean ] ); }
 

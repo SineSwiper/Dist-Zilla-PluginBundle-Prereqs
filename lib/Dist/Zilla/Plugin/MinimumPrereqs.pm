@@ -24,7 +24,6 @@ sub register_prereqs {
    my $prereqs = $zilla->prereqs->cpan_meta_prereqs;
 
    # Find the lowest required dependencies
-   my $prereqs = $self->zilla->prereqs;
    $self->log("Searching for minimum dependency versions");
    
    foreach my $phase (qw(configure runtime build test)) {
@@ -49,16 +48,17 @@ sub register_prereqs {
 
 sub _mcpan_module_minrelease {
    my ($self, $module, $try_harder) = @_;
+   my $year = $self->minimum_year;
   
    my %search_params = (
       sort   => 'date',
-      fields => 'date,module.version,module.name',
+      fields => 'date,distribution,module.version,module.name',
       size   => $try_harder ? 20 : 1,   
    );
   
    ### XXX: This should be replaced with a ->file() method when those
    ### two pull requests of mine are put into CPAN...
-   $search_params{q} = join(' AND ', 'module.name:"'.$module.'"', 'maturity:released', 'module.authorized:true', 'date:['.$self->minimum_year.' TO 2099]');
+   $search_params{q} = join(' AND ', 'module.name:"'.$module.'"', 'maturity:released', 'module.authorized:true', "date:[$year TO 2099]");
    $self->log_debug("Checking module $module via MetaCPAN");
    #$self->log_debug('   [q='.$search_params{q}.']');
    my $details = $self->mcpan->fetch( "file/_search", %search_params );
@@ -90,11 +90,10 @@ sub _mcpan_module_minrelease {
          return undef;
       }
       $self->log_debug("   MetaCPAN got confused; trying harder...");
-      return $self->_mcpan_module_minrelease($module, $ver_str, 1)
+      return $self->_mcpan_module_minrelease($module, 1)
    }
-
-   my $v = $hit->{fields}{'module.version'};
-   return $v && version->parse($v);
+   
+   return $hit->{fields}{'module.version'};
 }
 
 __PACKAGE__->meta->make_immutable;

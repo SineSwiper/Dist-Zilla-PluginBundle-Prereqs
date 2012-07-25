@@ -9,7 +9,7 @@ use Moose;
 use MooseX::Types -declare => ['RemovalLevelInt'];
 use MooseX::Types::Moose qw/Int/;
 
-use Module::CoreList;
+use Module::CoreList 2.69;  # (try to keep this one current)
 use List::AllUtils qw(min max part);
 use version 0.77;
 

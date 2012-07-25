@@ -23,12 +23,14 @@ prereqs:
       Dist::Zilla::Role::PluginBundle::Merged: 0
       Dist::Zilla::Role::PrereqSource: 0
       List::AllUtils: 0
+      Module::CoreList: 2.69
       Moose: 0
       MooseX::Types: 0
       perl: v5.10.1
       sanity: 0
   test:
     requires:
+      Devel::SimpleTrace: 0
       Test::DZil: 0
       Test::Most: 0
       YAML::Tiny: 0
