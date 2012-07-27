@@ -1,6 +1,6 @@
 package Dist::Zilla::Plugin::PrereqsClean;
 
-our $VERSION = '0.90'; # VERSION
+our $VERSION = '0.91'; # VERSION
 # ABSTRACT: Automatically cleans up the mess from other Prereq modules
 
 use sanity;
@@ -331,7 +331,7 @@ have a minimum in their code, which it will use by default.  Otherwise, you can 
 here, instead of inside the modules.
 
 The "last resort" default is v5.8.8, which is the minimum version of Perl that included
-L<ExtUtils::MakeMaker|EUMM>.
+L<EUMM|ExtUtils::MakeMaker>.
 
 =head2 removal_level
 
@@ -421,8 +421,8 @@ If any of this is too scary for you, just set the removal_level to 0.
 
 =head1 SEE ALSO
 
-Other Dist::Zilla Prereq plugins: L<Dist::Zilla::Plugin::Prereqs|Prereqs>, L<Dist::Zilla::Plugin::AutoPrereqs|AutoPrereqs>,
-L<Dist::Zilla::Plugin::LatestPrereqs|LatestPrereqs>, L<Dist::Zilla::Plugin::DarkPAN|DarkPAN>
+Other Dist::Zilla Prereq plugins: L<Prereqs|Dist::Zilla::Plugin::Prereqs>, L<AutoPrereqs|Dist::Zilla::Plugin::AutoPrereqs>,
+L<LatestPrereqs|Dist::Zilla::Plugin::LatestPrereqs>, L<DarkPAN|Dist::Zilla::Plugin::DarkPAN>
 
 =head1 AVAILABILITY
 

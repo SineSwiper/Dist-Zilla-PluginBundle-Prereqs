@@ -46,15 +46,15 @@
    "provides" : {
       "Dist::Zilla::Plugin::MinimumPrereqs" : {
          "file" : "lib/Dist/Zilla/Plugin/MinimumPrereqs.pm",
-         "version" : "0.90"
+         "version" : "0.91"
       },
       "Dist::Zilla::Plugin::PrereqsClean" : {
          "file" : "lib/Dist/Zilla/Plugin/PrereqsClean.pm",
-         "version" : "0.90"
+         "version" : "0.91"
       },
       "Dist::Zilla::PluginBundle::Prereqs" : {
          "file" : "lib/Dist/Zilla/PluginBundle/Prereqs.pm",
-         "version" : "0.90"
+         "version" : "0.91"
       }
    },
    "release_status" : "stable",
@@ -70,7 +70,7 @@
       },
       "x_irc" : "irc://irc.perl.org/#distzilla"
    },
-   "version" : "0.90",
+   "version" : "0.91",
    "x_Dist_Zilla" : {
       "plugins" : [
          {

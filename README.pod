@@ -44,30 +44,30 @@ plugins:
 
 =item *
 
-L<Dist::Zilla::Plugin::AutoPrereqs|AutoPrereqs>
+L<AutoPrereqs|Dist::Zilla::Plugin::AutoPrereqs>
 
 =item *
 
-L<Dist::Zilla::Plugin::MinimumPerl|MinimumPerl>
+L<MinimumPerl|Dist::Zilla::Plugin::MinimumPerl>
 
 =item *
 
-L<Dist::Zilla::Plugin::MinimumPrereqs|MinimumPrereqs>
+L<MinimumPrereqs|Dist::Zilla::Plugin::MinimumPrereqs>
 
 =item *
 
-L<Dist::Zilla::Plugin::PrereqsClean|PrereqsClean>
+L<PrereqsClean|Dist::Zilla::Plugin::PrereqsClean>
 
 =back
 
 This also delegates the ordering pitfalls, so you don't have to worry about that.  All
 of the options from those plugins are directly supported from within the bundle, via
-L<Dist::Zilla::Role::PluginBundle::Merged|PluginBundle::Merged>.
+L<PluginBundle::Merged|Dist::Zilla::Role::PluginBundle::Merged>.
 
 =head1 SEE ALSO
 
-"Manual entry" Dist::Zilla Prereq plugins: L<Dist::Zilla::Plugin::Prereqs|Prereqs>, L<Dist::Zilla::Plugin::RemovePrereqs|RemovePrereqs>,
-L<Dist::Zilla::Plugin::RemovePrereqsMatching|RemovePrereqsMatching>, L<Dist::Zilla::Plugin::Conflicts|Conflicts>
+"Manual entry" Dist::Zilla Prereq plugins: L<Prereqs|Dist::Zilla::Plugin::Prereqs>, L<RemovePrereqs|Dist::Zilla::Plugin::RemovePrereqs>,
+L<RemovePrereqsMatching|Dist::Zilla::Plugin::RemovePrereqsMatching>, L<Conflicts|Dist::Zilla::Plugin::Conflicts>
 
 =head1 AVAILABILITY
 

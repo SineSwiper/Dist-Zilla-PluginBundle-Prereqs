@@ -1,6 +1,6 @@
 package Dist::Zilla::Plugin::MinimumPrereqs;
 
-our $VERSION = '0.90'; # VERSION
+our $VERSION = '0.91'; # VERSION
 # ABSTRACT: Adjust blank prereqs to use the lowest version available
 
 use sanity;
@@ -124,7 +124,7 @@ to contain that mimimum version.
 =head2 Why bother?
 
 Put your money where your mouth is.  If you say that you can support B<any version>, like
-L<http:E<sol>E<sol>search.cpan.orgE<sol>~stevanE<sol>Moose-0.01E<sol>|Moose v0.01>, then actually commit to it.
+L<Moose v0.01|http://search.cpan.org/~stevan/Moose-0.01/>, then actually commit to it.
 
 What's that?  You don't actually think it'll work on the very first version of Moose?  Then
 at least commit to something that was released in year 20XX.
@@ -134,7 +134,7 @@ at least commit to something that was released in year 20XX.
 Some users prefer to download as little from CPAN as they need to, and keep their Perl
 requirements in the same place as their OS requirements.  For example, Debian's apt system
 has thousands of Perl modules, with all of the proper requirements and dependencies, thanks
-to the L<http:E<sol>E<sol>pkg-perl.alioth.debian.orgE<sol>|Debian Perl Group>'s work to translate those
+to the L<Debian Perl Group|http://pkg-perl.alioth.debian.org/>'s work to translate those
 Perl modules to Debian packages.  This keeps OS dependencies clean and makes upgrades
 seemless.
 
@@ -156,12 +156,12 @@ this to C<<< Moose => 0.34 >>>, which was released in January 21, 2008.
 
 =item *
 
-L<Dist::Zilla::PluginBundle::Prereqs|@Prereqs>
+L<@Prereqs|Dist::Zilla::PluginBundle::Prereqs>
 
 =item *
 
-Other Dist::Zilla Prereq plugins: L<Dist::Zilla::Plugin::Prereqs|Prereqs>, L<Dist::Zilla::Plugin::AutoPrereqs|AutoPrereqs>,
-L<Dist::Zilla::Plugin::LatestPrereqs|LatestPrereqs>
+Other Dist::Zilla Prereq plugins: L<Prereqs|Dist::Zilla::Plugin::Prereqs>, L<AutoPrereqs|Dist::Zilla::Plugin::AutoPrereqs>,
+L<LatestPrereqs|Dist::Zilla::Plugin::LatestPrereqs>
 
 =item *
 
