@@ -22,6 +22,7 @@ my %WriteMakefileArgs = (
   "LICENSE" => "artistic_2",
   "NAME" => "Dist::Zilla::PluginBundle::Prereqs",
   "PREREQ_PM" => {
+    "Dist::Zilla::Plugin::MinimumPerl" => "1.003",
     "Dist::Zilla::Role::MetaCPANInterfacer" => 0,
     "Dist::Zilla::Role::PluginBundle::Merged" => 0,
     "Dist::Zilla::Role::PrereqSource" => 0,

@@ -49,6 +49,7 @@ sub pmver {
     return sprintf('%-45s => %-10s%-15s%s', $module, $pmver, $wanted, "\n");
 }
 
+eval { $v .= pmver('Dist::Zilla::Plugin::MinimumPerl','1.003') };
 eval { $v .= pmver('Dist::Zilla::Role::MetaCPANInterfacer','any version') };
 eval { $v .= pmver('Dist::Zilla::Role::PluginBundle::Merged','any version') };
 eval { $v .= pmver('Dist::Zilla::Role::PrereqSource','any version') };

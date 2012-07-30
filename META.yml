@@ -19,6 +19,7 @@ no_index:
 prereqs:
   runtime:
     requires:
+      Dist::Zilla::Plugin::MinimumPerl: 1.003
       Dist::Zilla::Role::MetaCPANInterfacer: 0
       Dist::Zilla::Role::PluginBundle::Merged: 0
       Dist::Zilla::Role::PrereqSource: 0
@@ -155,7 +156,15 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::PrereqsClean
       name: PrereqsClean
-      version: 1.00
+      version: 0.91
+    -
+      class: Dist::Zilla::Plugin::Prereqs
+      config:
+        Dist::Zilla::Plugin::Prereqs:
+          phase: runtime
+          type: requires
+      name: Prereqs
+      version: 4.300020
     -
       class: Dist::Zilla::Plugin::CheckPrereqsIndexed
       name: CheckPrereqsIndexed
