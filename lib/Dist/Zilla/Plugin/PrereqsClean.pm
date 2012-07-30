@@ -301,7 +301,7 @@ have a minimum in their code, which it will use by default.  Otherwise, you can 
 here, instead of inside the modules.
 
 The "last resort" default is v5.8.8, which is the minimum version of Perl that included
-[ExtUtils::MakeMaker|EUMM].
+[EUMM|ExtUtils::MakeMaker].
 
 == removal_level
 
@@ -376,7 +376,7 @@ If any of this is too scary for you, just set the removal_level to 0.
 
 = SEE ALSO
 
-Other Dist::Zilla Prereq plugins: [Dist::Zilla::Plugin::Prereqs|Prereqs], [Dist::Zilla::Plugin::AutoPrereqs|AutoPrereqs],
-[Dist::Zilla::Plugin::LatestPrereqs|LatestPrereqs], [Dist::Zilla::Plugin::DarkPAN|DarkPAN]
+Other Dist::Zilla Prereq plugins: [Prereqs|Dist::Zilla::Plugin::Prereqs], [AutoPrereqs|Dist::Zilla::Plugin::AutoPrereqs],
+[LatestPrereqs|Dist::Zilla::Plugin::LatestPrereqs], [DarkPAN|Dist::Zilla::Plugin::DarkPAN]
 
 =end wikidoc

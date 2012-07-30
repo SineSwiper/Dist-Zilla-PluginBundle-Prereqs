@@ -13,6 +13,7 @@ install:
    # Install the lowest possible required version for the dependencies
    - export OLD_CPANM_OPT=$PERL_CPANM_OPT
    - export PERL_CPANM_OPT='--mirror http://cpan.metacpan.org/ --mirror http://search.cpan.org/CPAN '$PERL_CPANM_OPT
+   - cpanm APOCAL/Dist-Zilla-Plugin-MinimumPerl-1.003.tar.gz
    - cpanm BBYRD/Dist-Zilla-Role-MetaCPANInterfacer-0.90.tar.gz
    - cpanm BBYRD/Dist-Zilla-Role-PluginBundle-Merged-0.90.tar.gz
    - cpanm RJBS/Dist-Zilla-2.100880.tar.gz

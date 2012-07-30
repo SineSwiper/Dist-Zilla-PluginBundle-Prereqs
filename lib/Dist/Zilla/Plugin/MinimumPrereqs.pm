@@ -118,7 +118,7 @@ to contain that mimimum version.
 == Why bother?
 
 Put your money where your mouth is.  If you say that you can support *any version*, like
-[http://search.cpan.org/~stevan/Moose-0.01/|Moose v0.01], then actually commit to it.
+[Moose v0.01|http://search.cpan.org/~stevan/Moose-0.01/], then actually commit to it.
 
 What's that?  You don't actually think it'll work on the very first version of Moose?  Then
 at least commit to something that was released in year 20XX.
@@ -128,7 +128,7 @@ at least commit to something that was released in year 20XX.
 Some users prefer to download as little from CPAN as they need to, and keep their Perl
 requirements in the same place as their OS requirements.  For example, Debian's apt system
 has thousands of Perl modules, with all of the proper requirements and dependencies, thanks
-to the [http://pkg-perl.alioth.debian.org/|Debian Perl Group]'s work to translate those
+to the [Debian Perl Group|http://pkg-perl.alioth.debian.org/]'s work to translate those
 Perl modules to Debian packages.  This keeps OS dependencies clean and makes upgrades
 seemless.
 
@@ -146,9 +146,9 @@ this to {Moose => 0.34}, which was released in January 21, 2008.
 
 = SEE ALSO
 
-* [Dist::Zilla::PluginBundle::Prereqs|@Prereqs]
-* Other Dist::Zilla Prereq plugins: [Dist::Zilla::Plugin::Prereqs|Prereqs], [Dist::Zilla::Plugin::AutoPrereqs|AutoPrereqs],
-[Dist::Zilla::Plugin::LatestPrereqs|LatestPrereqs]
+* [@Prereqs|Dist::Zilla::PluginBundle::Prereqs]
+* Other Dist::Zilla Prereq plugins: [Prereqs|Dist::Zilla::Plugin::Prereqs], [AutoPrereqs|Dist::Zilla::Plugin::AutoPrereqs],
+[LatestPrereqs|Dist::Zilla::Plugin::LatestPrereqs]
 * The [Dist::Zilla::Plugin::TravisYML|TravisYML] plugin and MVDT (Minimum Dependency Version Testing)
 
 =end wikidoc

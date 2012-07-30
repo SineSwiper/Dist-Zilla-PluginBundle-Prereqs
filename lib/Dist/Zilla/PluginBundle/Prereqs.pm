@@ -51,18 +51,18 @@ __END__
 This is a handy [Dist::Zilla] plugin bundle that ties together several useful Prereq
 plugins:
 
-* [Dist::Zilla::Plugin::AutoPrereqs|AutoPrereqs]
-* [Dist::Zilla::Plugin::MinimumPerl|MinimumPerl]
-* [Dist::Zilla::Plugin::MinimumPrereqs|MinimumPrereqs]
-* [Dist::Zilla::Plugin::PrereqsClean|PrereqsClean]
+* [AutoPrereqs|Dist::Zilla::Plugin::AutoPrereqs]
+* [MinimumPerl|Dist::Zilla::Plugin::MinimumPerl]
+* [MinimumPrereqs|Dist::Zilla::Plugin::MinimumPrereqs]
+* [PrereqsClean|Dist::Zilla::Plugin::PrereqsClean]
 
 This also delegates the ordering pitfalls, so you don't have to worry about that.  All
 of the options from those plugins are directly supported from within the bundle, via
-[Dist::Zilla::Role::PluginBundle::Merged|PluginBundle::Merged].
+[PluginBundle::Merged|Dist::Zilla::Role::PluginBundle::Merged].
 
 = SEE ALSO
 
-"Manual entry" Dist::Zilla Prereq plugins: [Dist::Zilla::Plugin::Prereqs|Prereqs], [Dist::Zilla::Plugin::RemovePrereqs|RemovePrereqs],
-[Dist::Zilla::Plugin::RemovePrereqsMatching|RemovePrereqsMatching], [Dist::Zilla::Plugin::Conflicts|Conflicts]
+"Manual entry" Dist::Zilla Prereq plugins: [Prereqs|Dist::Zilla::Plugin::Prereqs], [RemovePrereqs|Dist::Zilla::Plugin::RemovePrereqs],
+[RemovePrereqsMatching|Dist::Zilla::Plugin::RemovePrereqsMatching], [Conflicts|Dist::Zilla::Plugin::Conflicts]
 
 =end wikidoc
