@@ -1,6 +1,16 @@
 Revision History for Dist-Zilla-PluginBundle-Prereqs
 ====================================================
 
+v0.91 2012-07-30
+----------------
+
+commit ec3835b1f0eca7b4e20b375a81dfb7eee954a886
+Author: SineSwiper <BBYRD@CPAN.org>
+Date:   Mon Jul 30 11:05:22 2012 -0400
+
+    Fix reversed links
+    Add MinimumPerl plugin dep
+
 ===================================
 End of changes in the last 365 days
 ===================================
