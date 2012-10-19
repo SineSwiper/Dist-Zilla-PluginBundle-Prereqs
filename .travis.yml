@@ -7,27 +7,10 @@ perl:
 
 install:
    # Deal with all of the DZIL dependancies, quickly and quietly
-   - cpanm --quiet --notest Dist::Zilla
-   - dzil authordeps | cpanm --quiet --notest
+   - cpanm --quiet --notest --skip-satisfied Dist::Zilla
+   - dzil authordeps | grep -vP '[^\w:]' | xargs -n 5 -P 10 cpanm --quiet --notest --skip-satisfied
 
-   # Install the lowest possible required version for the dependencies
-   - export OLD_CPANM_OPT=$PERL_CPANM_OPT
-   - export PERL_CPANM_OPT='--mirror http://cpan.metacpan.org/ --mirror http://search.cpan.org/CPAN '$PERL_CPANM_OPT
-   - cpanm APOCAL/Dist-Zilla-Plugin-MinimumPerl-1.003.tar.gz
-   - cpanm BBYRD/Dist-Zilla-Role-MetaCPANInterfacer-0.90.tar.gz
-   - cpanm BBYRD/Dist-Zilla-Role-PluginBundle-Merged-0.90.tar.gz
-   - cpanm RJBS/Dist-Zilla-2.100880.tar.gz
-   - cpanm DROLSKY/List-AllUtils-0.01.tar.gz
-   - cpanm BINGOS/Module-CoreList-2.69.tar.gz
-   - cpanm STEVAN/Moose-0.01.tar.gz
-   - cpanm PHAYLON/MooseX-Types-0.01.tar.gz
-   - cpanm BBYRD/sanity-0.91.tar.gz
-   - cpanm RJBS/Dist-Zilla-4.200002.tar.gz
-   - cpanm OVID/Test-Most-0.01.tar.gz
-   - cpanm ADAMK/YAML-Tiny-0.01.tar.gz
-   - export PERL_CPANM_OPT=$OLD_CPANM_OPT
+   - export RELEASE_TESTING=1 AUTOMATED_TESTING=1 AUTHOR_TESTING=1 HARNESS_OPTIONS=j10:c HARNESS_TIMER=1
+   - dzil listdeps | grep -vP '[^\w:]' | cpanm --verbose
 script:
    - dzil smoke --release --author
-notifications:
-   irc:
-      - "irc.perl.org#distzilla"
