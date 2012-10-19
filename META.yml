@@ -117,10 +117,6 @@ x_Dist_Zilla:
       name: '@Filter/Test::Compile'
       version: 1.112820
     -
-      class: Dist::Zilla::Plugin::PodCoverageTests
-      name: '@Filter/PodCoverageTests'
-      version: 4.300027
-    -
       class: Dist::Zilla::Plugin::PodSyntaxTests
       name: '@Filter/PodSyntaxTests'
       version: 4.300027
