@@ -1,6 +1,6 @@
 package Dist::Zilla::Plugin::PrereqsClean;
 
-our $VERSION = '0.91'; # VERSION
+our $VERSION = '0.92'; # VERSION
 # ABSTRACT: Automatically cleans up the mess from other Prereq modules
 
 use sanity;
@@ -165,10 +165,11 @@ sub register_prereqs {
             $module_distro{$_} = $distro for @modules;  # contains all modules vs. $distro_mods
          }
 
-         my $distro = $module_distro{$module};
-         $distro_mods->{$distro} //= {};  # hashes for uniqueness
-         $distro_mods->{$distro}{$module} = 1;  
-         $distro_list{$distro} = 1;
+         if (my $distro = $module_distro{$module}) {
+            $distro_mods->{$distro} //= {};  # hashes for uniqueness
+            $distro_mods->{$distro}{$module} = 1;  
+            $distro_list{$distro} = 1;
+         }
       }
       next unless ($self->removal_level >= RL_DIST_NO_SPLIT);
       

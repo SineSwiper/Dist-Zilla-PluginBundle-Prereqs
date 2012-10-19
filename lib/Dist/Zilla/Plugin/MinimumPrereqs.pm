@@ -1,6 +1,6 @@
 package Dist::Zilla::Plugin::MinimumPrereqs;
 
-our $VERSION = '0.91'; # VERSION
+our $VERSION = '0.92'; # VERSION
 # ABSTRACT: Adjust blank prereqs to use the lowest version available
 
 use sanity;

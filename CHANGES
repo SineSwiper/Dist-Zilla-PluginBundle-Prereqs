@@ -1,8 +1,23 @@
 Revision History for Dist-Zilla-PluginBundle-Prereqs
 ====================================================
 
+v0.92 2012-10-19
+----------------
+
+commit 77f8cf47c00d4a2cdf382153181967b2147e041d
+Author: Brendan Byrd <Perl@ResonatorSoft.org>
+Date:   Fri Oct 19 11:52:13 2012 -0400
+
+    Fix undef warnings
+
 v0.91 2012-07-30
 ----------------
+
+commit 044bc556d97a1d42359dc55ef3acfb58c4037c11
+Author: SineSwiper <BBYRD@CPAN.org>
+Date:   Mon Jul 30 11:07:20 2012 -0400
+
+    Release v0.91
 
 commit ec3835b1f0eca7b4e20b375a81dfb7eee954a886
 Author: SineSwiper <BBYRD@CPAN.org>
