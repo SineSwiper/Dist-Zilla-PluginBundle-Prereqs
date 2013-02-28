@@ -9,7 +9,7 @@ use Moose;
 use MooseX::Types -declare => ['RemovalLevelInt'];
 use MooseX::Types::Moose qw/Int/;
 
-use Module::CoreList 2.69;  # (try to keep this one current)
+use Module::CoreList 2.80;  # (try to keep this one current)
 use List::AllUtils qw(min max part);
 use version 0.77;
 
@@ -36,7 +36,7 @@ use constant {
 subtype RemovalLevelInt,
    as Int,
    where   { $_ >= RL_NONE && $_ <= RL_DIST_ALL },
-   message { "removal_level should be between ".(RL_NONE)." and ".(RL_DIST_ALL) };   
+   message { "removal_level should be between ".(RL_NONE)." and ".(RL_DIST_ALL) };
 
 has removal_level => (
    is      => 'ro',
@@ -48,7 +48,7 @@ sub register_prereqs {
    my ($self) = @_;
    my $zilla   = $self->zilla;
    my $prereqs = $zilla->prereqs->cpan_meta_prereqs;
-   
+
    # consolidate Perl versions between phases (since you can't upgrade Perl in CPAN, etc., anyway)
    my $default_perlver = version->parse( $self->minimum_perl );
    foreach my $phase (qw(configure runtime build)) {  # skip test, since it's a non-critical path
@@ -59,7 +59,7 @@ sub register_prereqs {
 
    my $latest_perlver = version->parse( (reverse sort keys %Module::CoreList::released)[0] );
    $self->log_debug([ 'Default Perl %s, Latest Perl %s', $default_perlver->normal, $latest_perlver->normal ]);
-   
+
    # Look for specific things that would change the Perl version
    $self->logger->set_prefix("{Pass 1: Core} ");
    foreach my $phase (qw(configure runtime build test)) {  # phases ordered by importance
@@ -78,10 +78,10 @@ sub register_prereqs {
          next if ( $modver =~ /\s/ );
          $modver = version->parse($modver);
          my $modver_log = $module.($modver ? ' '.$modver->normal : '');
-         
+
          # Core module (might as well deal with this whole block while we're here...)
          if ( my $release = version->parse( Module::CoreList->first_release($module, $modver) ) ) {
-            
+
             if ($release > $perlver) {
                my $distro = $self->_mcpan_module2distro($module) || next;
 
@@ -89,7 +89,7 @@ sub register_prereqs {
                   $self->log([ 'Module %s is only found in core Perl; adding Perl %s requirement', $modver_log, $release->normal ]);
                   $req->clear_requirement($module);
                   $req->add_minimum( perl => $release );
-                  
+
                   $perlver = $release;
                   $default_perlver = $release if ($phase =~ /configure|runtime|build/);
                }
@@ -103,7 +103,7 @@ sub register_prereqs {
    }
 
    $prereqs->requirements_for('runtime', 'requires')->add_minimum( perl => $default_perlver );
-   
+
    # Okay, clean up the remaining Perl core modules (if any), and any non-cores
    my $distro_mods = {};
    my %module_distro;
@@ -111,7 +111,7 @@ sub register_prereqs {
       $self->logger->set_prefix("{Pass 2.1: Modules} ");
       $self->log_debug("Phase '$phase'");
       my $req = $prereqs->requirements_for($phase, 'requires');
-      
+
       my %distro_list;  # only saved this phase vs. $distro_mods
       # the rest build up modules as they go, since the phase order works according to CPAN::Meta::Spec processing
 
@@ -121,10 +121,10 @@ sub register_prereqs {
          $perlver = $default_perlver;
          $req->clear_requirement('perl') if ($phase =~ /configure|build/);
       }
-      
+
       foreach my $module (sort ($req->required_modules) ) {
          next if $module eq 'perl';  # obvious
-         
+
          # Skips
          if ( Module::CoreList->is_deprecated($module, $latest_perlver) ) {
             $self->log([ 'Module %s is deprecated in the latest core Perl (%s); you should consider alternatives...', $module, $latest_perlver->normal ]);
@@ -135,7 +135,7 @@ sub register_prereqs {
             next;
          }
          next unless ($self->removal_level);
-         
+
          my $modver = $req->requirements_for_module($module);
          if ( $modver && $modver =~ /\s/ ) {
             # what I really want is $req->is_simple($module)...
@@ -145,7 +145,7 @@ sub register_prereqs {
          }
          $modver = version->parse($modver);
          my $modver_log = $module.($modver ? ' '.$modver->normal : '');
-         
+
          # Core module
          if ( my $release = version->parse( Module::CoreList->first_release($module, $modver) ) ) {
             if ($release > $perlver) {
@@ -167,12 +167,12 @@ sub register_prereqs {
 
          if (my $distro = $module_distro{$module}) {
             $distro_mods->{$distro} //= {};  # hashes for uniqueness
-            $distro_mods->{$distro}{$module} = 1;  
+            $distro_mods->{$distro}{$module} = 1;
             $distro_list{$distro} = 1;
          }
       }
       next unless ($self->removal_level >= RL_DIST_NO_SPLIT);
-      
+
       # Look through the collected distro lists and figure out which should be removed
       $self->logger->set_prefix("{Pass 2.2: Distros} ");
       my @distros = map { [ $_, keys %{$distro_mods->{$_}} ] } sort keys %distro_list;
@@ -180,29 +180,29 @@ sub register_prereqs {
          my $distro = shift @$distro_pair;
          my @modules = sort { length($a) <=> length($b) } @$distro_pair;
          my @dmods   = grep { $module_distro{$_} eq $distro } keys %module_distro;
-         
+
          # hopefully, we can find a common name to use
          (my $main_module = $distro) =~ s/-/::/g;
          $main_module = $modules[0] unless ($main_module ~~ @dmods);
-         
+
          # remove any obvious split potentials
          if ($self->removal_level <= RL_DIST_NO_SPLIT) {
             my ($non_ns, $new_mods) = part { /^\Q$main_module\E(?:\:\:|$)/ } @modules;
             @modules = $new_mods ? @$new_mods : ();
-            
+
             # Add split modules to a "new" distro for further processing
             # (This will clean up both Dist::A::* and Dist::B::* from Dist-A)
             if ($non_ns && $new_mods) {
                @$non_ns = sort { length($a) <=> length($b) } @$non_ns;
                unshift @distros, [ $non_ns->[0], @$non_ns ];
             }
-            
+
             if (@modules <= 1) {
                $self->log_debug("Skipping module $main_module; distro only has ".scalar @modules." module left since split comparison");
                next;
             }
          }
-         
+
          my $maxver = max map { version->parse( $req->requirements_for_module($_) || 0 ) } @modules;
          $maxver ||= 0;
 
@@ -217,7 +217,7 @@ sub register_prereqs {
 
 sub _mcpan_module2distro {
    my ($self, $module, $get_module_list) = @_;
-   
+
    # faster and less bulky than a straight module/$module pull
    ### XXX: This should be replaced with a ->file() method when those
    ### two pull requests of mine are put into CPAN...
@@ -233,7 +233,7 @@ sub _mcpan_module2distro {
    }
    my ($distro, $release) = @{ $details->{hits}{hits}[0]{fields} }{qw(distribution release)};
    return $distro unless $get_module_list;
-   
+
    $self->log_debug("Checking release $release for module list via MetaCPAN");
    $details = $self->mcpan->fetch("file/_search",
       q      => 'release:"'.$release.'" AND module.name:* AND module.authorized:true',
@@ -257,7 +257,7 @@ __END__
 =begin wikidoc
 
 = SYNOPSIS
- 
+
    ; ...other Prereq plugins...
    ; (NOTE: Order is important, so PrereqsClean should go last.)
    [PrereqsClean]
@@ -266,7 +266,7 @@ __END__
    removal_level = 2
 
 = DESCRIPTION
- 
+
 Ever notice that it's really easy to figure out if a module's author used Dist::Zilla by
 the amount of dependencies?  strict?  warnings?  base?  Every module for Foo::Bar::\*,
 individually listed?
@@ -280,7 +280,7 @@ necessary
 
 == Why bother?
 
-Why even worry about the dependency list?  
+Why even worry about the dependency list?
 
 0 Your list of dependencies should give users a general idea of how many *distributions*
 they need to download from CPAN.  Bulking up the dependencies with every single little
@@ -330,7 +330,7 @@ distribution.)
 
 *Situation:* Once in a blue moon, the Perl folks will decide that a module is either too old, too
 broken, or too obscure to keep into core.  Once that happens, there is a deprecation process.
-First, the module is marked as deprecated for an entire major release cycle ({5.##.\*}).  If it 
+First, the module is marked as deprecated for an entire major release cycle ({5.##.\*}).  If it
 was in the middle of a cycle, it will likely last another full cycle.
 
 Finally, the module is removed from core.  In many cases, the module isn't even available on
@@ -344,7 +344,7 @@ for newer versions of Perl.
 32 modules or module sets (93 indiv modules) have been removed from core, 10 of which were removed
 during a massive cleanup during the 5.8/9 cycle.
 
-Given that you're using something as modern as [Dist::Zilla], you're probably not depending on 
+Given that you're using something as modern as [Dist::Zilla], you're probably not depending on
 modules that are 10 years old.  And you're probably releasing often enough that you'll run into
 the built-in deprecation warning before it gets removed.
 
@@ -362,9 +362,9 @@ dependencies.  However, the chances are high that the distro author is now inclu
 modules in their dependency list, so CPAN will install it correctly, anyway.
 
 *Risk:* This is a very rare event, but it does happen to major modules.  For example, GAAS had
-split off all of the non-LWP modules from [libwww-perl] for his 6.0 release.  However, again, 
+split off all of the non-LWP modules from [libwww-perl] for his 6.0 release.  However, again,
 he also included dependency links back to those modules, so CPAN would have installed it
-correctly.  Plus, it was a logical namespace split, so PrereqsClean's "split protection" would 
+correctly.  Plus, it was a logical namespace split, so PrereqsClean's "split protection" would
 have already safeguarded against any problems.
 
 So, the odds of this causing any problems are very, very low.
