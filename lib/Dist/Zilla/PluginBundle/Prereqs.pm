@@ -1,23 +1,23 @@
 package Dist::Zilla::PluginBundle::Prereqs;
 
-our $VERSION = '0.92'; # VERSION
+our $VERSION = '0.93'; # VERSION
 # ABSTRACT: Useful Prereqs modules in a Dist::Zilla bundle
 
 use sanity;
 use Moose;
 
-with 'Dist::Zilla::Role::PluginBundle::Merged' => { mv_plugins => ['AutoPrereqs'] };
+with 'Dist::Zilla::Role::PluginBundle::Merged' => { mv_plugins => [qw( AutoPrereqs MinimumPerl )] };
  
 sub configure { shift->add_merged( qw[ AutoPrereqs MinimumPerl MinimumPrereqs PrereqsClean ] ); }
 
 __PACKAGE__->meta->make_immutable;
 42;
 
-
+__END__
 
 =pod
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 
@@ -88,7 +88,7 @@ L<RemovePrereqsMatching|Dist::Zilla::Plugin::RemovePrereqsMatching>, L<Conflicts
 
 =head1 AVAILABILITY
 
-The project homepage is L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-Prereqs/wiki>.
+The project homepage is L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-Prereqs>.
 
 The latest version of this module is available from the Comprehensive Perl
 Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN
@@ -111,13 +111,13 @@ those networks/channels and get help:
 
 irc.perl.org
 
-You can connect to the server at 'irc.perl.org' and join this channel: #distzilla then talk to this person for help: SineSwiper.
+You can connect to the server at 'irc.perl.org' and talk to this person for help: SineSwiper.
 
 =back
 
 =head2 Bugs / Feature Requests
 
-Please report any bugs or feature requests via L<L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-Prereqs/issues>|GitHub>.
+Please report any bugs or feature requests via L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-Prereqs/issues>.
 
 =head1 AUTHOR
 
@@ -125,14 +125,10 @@ Brendan Byrd <BBYRD@CPAN.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2012 by Brendan Byrd.
+This software is Copyright (c) 2014 by Brendan Byrd.
 
 This is free software, licensed under:
 
   The Artistic License 2.0 (GPL Compatible)
 
 =cut
-
-
-__END__
-

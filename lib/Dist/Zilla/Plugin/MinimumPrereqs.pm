@@ -1,6 +1,6 @@
 package Dist::Zilla::Plugin::MinimumPrereqs;
 
-our $VERSION = '0.92'; # VERSION
+our $VERSION = '0.93'; # VERSION
 # ABSTRACT: Adjust blank prereqs to use the lowest version available
 
 use sanity;
@@ -99,11 +99,11 @@ sub _mcpan_module_minrelease {
 __PACKAGE__->meta->make_immutable;
 42;
 
-
+__END__
 
 =pod
 
-=encoding utf-8
+=encoding UTF-8
 
 =head1 NAME
 
@@ -171,7 +171,7 @@ The L<Dist::Zilla::Plugin::TravisYML|TravisYML> plugin and MVDT (Minimum Depende
 
 =head1 AVAILABILITY
 
-The project homepage is L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-Prereqs/wiki>.
+The project homepage is L<https://github.com/SineSwiper/Dist-Zilla-PluginBundle-Prereqs>.
 
 The latest version of this module is available from the Comprehensive Perl
 Archive Network (CPAN). Visit L<http://www.perl.com/CPAN/> to find a CPAN
@@ -183,14 +183,10 @@ Brendan Byrd <BBYRD@CPAN.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2012 by Brendan Byrd.
+This software is Copyright (c) 2014 by Brendan Byrd.
 
 This is free software, licensed under:
 
   The Artistic License 2.0 (GPL Compatible)
 
 =cut
-
-
-__END__
-
