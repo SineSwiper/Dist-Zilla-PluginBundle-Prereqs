@@ -74,33 +74,31 @@ for my $yr (0, 2008..2011) {
    $meta = build_meta($tzil);
 
    # We get newer and newer versions as we go...
-   for ($yr) {
-      when (0) {
-         $wanted{'Acme::Prereq::'.$_} = '0.01' for (
-            qw{A B None}, 
-            ( map { 'AnotherNS::'.$_ } (qw{B C Deeper::B Deeper::C}) ),
-            ( map { 'BigDistro::'.$_ } (qw{B   Deeper::A Deeper::B}) ),
-         );
-         $wanted{'Acme::Prereq::AnotherNS'} = '0.02';
-         $wanted{'Module::Metadata'} = '1.000000';
-      }
-      when (2008) {
-         $wanted{'Shell'}    = '0.72';
-         $wanted{'warnings'} = '1.05_01';
-         $wanted{'strict'}   = '1.03';
-      }
-      when (2009) {
-         $wanted{'warnings'} = '1.06';
-         $wanted{'strict'}   = '1.04';
-      }
-      when (2010) {
-         $wanted{'warnings'} = '1.09';
-      }
-      when (2011) {
-         $wanted{'Module::Metadata'} = '1.000003';
-      }
+   if ($yr == 0) {
+      $wanted{'Acme::Prereq::'.$_} = '0.01' for (
+        qw{A B None},
+        ( map { 'AnotherNS::'.$_ } (qw{B C Deeper::B Deeper::C}) ),
+        ( map { 'BigDistro::'.$_ } (qw{B   Deeper::A Deeper::B}) ),
+      );
+      $wanted{'Acme::Prereq::AnotherNS'} = '0.02';
+      $wanted{'Module::Metadata'} = '1.000000';
    }
-   
+   elsif ($yr == 2008) {
+      $wanted{'warnings'} = '1.05_01';
+      $wanted{'strict'}   = '1.03';
+      $wanted{'Shell'}    = '0.72';
+   }
+   elsif ($yr == 2009) {
+      $wanted{'warnings'} = '1.06';
+      $wanted{'strict'}   = '1.04';
+   }
+   elsif ($yr == 2010) {
+      $wanted{'warnings'} = '1.09';
+   }
+   elsif ($yr == 2011) {
+      $wanted{'Module::Metadata'} = '1.000011';
+   }
+
    is_deeply(
       $meta->{prereqs}{runtime}{requires},
       \%wanted,

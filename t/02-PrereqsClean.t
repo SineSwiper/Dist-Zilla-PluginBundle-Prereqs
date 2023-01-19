@@ -74,29 +74,27 @@ for my $rl (0 .. 3) {
    $meta = build_meta($tzil);
 
    # Keep removing stuff as we go...
-   for ($rl) {
-      when (0) {
-         # only Perl elevation
-         $wanted{'perl'} = '5.010001';
-         delete $wanted{'mro'};
-      }
-      when (1) {
-         # other core modules
-         delete $wanted{$_} for (qw{Module::Load strict warnings});
-      }
-      when (2) {
-         # Multiple modules within a distro (split protection)
-         delete $wanted{'Acme::Prereq::BigDistro::'.$_} for (qw{B Deeper::A Deeper::B});
-         delete $wanted{'Acme::Prereq::AnotherNS::'.$_} for (qw{B C Deeper::B Deeper::C});
-         $wanted{'Acme::Prereq::BigDistro'} = '0.01';
-         $wanted{'Acme::Prereq::AnotherNS'} = '0';
-      }
-      when (3) {
-         # Multiple modules within a distro (no split protection)
-         delete $wanted{'Acme::Prereq::AnotherNS'};
-      }
+   if ($rl == 0) {
+      # only Perl elevation
+      $wanted{'perl'} = '5.010001';
+      delete $wanted{'mro'};
    }
-   
+   elsif ($rl == 1) {
+      # other core modules
+      delete $wanted{$_} for (qw{Module::Load strict warnings});
+   }
+   elsif ($rl == 2) {
+      # Multiple modules within a distro (split protection)
+      delete $wanted{'Acme::Prereq::BigDistro::'.$_} for (qw{B Deeper::A Deeper::B});
+      delete $wanted{'Acme::Prereq::AnotherNS::'.$_} for (qw{B C Deeper::B Deeper::C});
+      $wanted{'Acme::Prereq::BigDistro'} = '0.01';
+      $wanted{'Acme::Prereq::AnotherNS'} = '0';
+   }
+   elsif ($rl == 3) {
+      # Multiple modules within a distro (no split protection)
+      delete $wanted{'Acme::Prereq::AnotherNS'};
+   }
+
    is_deeply(
       $meta->{prereqs}{runtime}{requires},
       \%wanted,

@@ -183,7 +183,7 @@ sub register_prereqs {
 
          # hopefully, we can find a common name to use
          (my $main_module = $distro) =~ s/-/::/g;
-         $main_module = $modules[0] unless ($main_module ~~ @dmods);
+         $main_module = $modules[0] unless (grep $_ eq $main_module, @dmods);
 
          # remove any obvious split potentials
          if ($self->removal_level <= RL_DIST_NO_SPLIT) {
