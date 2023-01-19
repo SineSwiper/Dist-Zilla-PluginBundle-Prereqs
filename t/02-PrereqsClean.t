@@ -38,7 +38,7 @@ my %wanted = (
 
    'Module::Metadata' => 0,
    'Module::Load'     => '0.12',
-   'Shell'            => 0,
+   'Switch'           => 0,
 
    'mro'              => '1.01',
    'strict'           => 0,

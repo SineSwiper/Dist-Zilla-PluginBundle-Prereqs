@@ -38,7 +38,7 @@ my %wanted = (
 
    'Module::Metadata' => 0,
    'Module::Load'     => '0.12',
-   'Shell'            => 0,
+   'Switch'           => 0,
 
    'mro'              => '1.01',
    'strict'           => 0,
@@ -83,18 +83,21 @@ for my $yr (0, 2008..2011) {
       );
       $wanted{'Acme::Prereq::AnotherNS'} = '0.02';
       $wanted{'Module::Metadata'} = '1.000000';
+      $wanted{'Switch'} = '1.00';
    }
    elsif ($yr == 2008) {
       $wanted{'warnings'} = '1.05_01';
       $wanted{'strict'}   = '1.03';
-      $wanted{'Shell'}    = '0.72';
+      $wanted{'Switch'}   = '2.14';
    }
    elsif ($yr == 2009) {
       $wanted{'warnings'} = '1.06';
       $wanted{'strict'}   = '1.04';
+      $wanted{'Switch'}   = '2.15';
    }
    elsif ($yr == 2010) {
       $wanted{'warnings'} = '1.09';
+      $wanted{'Switch'}   = '2.17';
    }
    elsif ($yr == 2011) {
       $wanted{'Module::Metadata'} = '1.000011';

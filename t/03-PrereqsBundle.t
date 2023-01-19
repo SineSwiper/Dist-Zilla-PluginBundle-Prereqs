@@ -38,7 +38,7 @@ my %wanted = (
 
    'Module::Metadata' => 0,
    'Module::Load'     => '0.12',
-   'Shell'            => 0,
+   'Switch'           => 0,
 
    'mro'              => '1.01',
    'strict'           => 0,
@@ -82,7 +82,7 @@ $meta = build_meta($tzil);
   'Acme::Prereq::None'         => '0.01',
   'DZPA::NotInDist'            => '0',
   'Module::Metadata'           => '1.000000',
-  'Shell'                      => '0.72',
+  'Switch'                     => '2.14',
   'perl'                       => '5.010001'
 );
 
