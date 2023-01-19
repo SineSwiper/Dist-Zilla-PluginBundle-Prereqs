@@ -1,24 +1,25 @@
-use sanity;
-use Test::Most tests => 4;
- 
+use strict;
+use warnings;
+use Test::More tests => 4;
+use Test::Fatal qw(lives_ok);
 use Test::DZil;
-use YAML::Tiny;
- 
+use JSON::PP qw(decode_json);
+
 sub build_meta {
    my $tzil = shift;
    $tzil->chrome->logger->set_debug(1);
    lives_ok(sub { $tzil->build }, 'built distro') || explain $tzil->log_messages;
-   YAML::Tiny->new->read($tzil->tempdir->file('build/META.yml'))->[0];
+   decode_json($tzil->built_in->child('META.json')->slurp_raw);
 }
- 
+
 my $tzil = Builder->from_config(
    { dist_root => 'corpus/dist' },
    { },
 );
- 
+
 # check found prereqs
 my $meta = build_meta($tzil);
- 
+
 my %wanted = (
    'Acme::Prereq::A'                    => 0,
    'Acme::Prereq::AnotherNS'            => 0,
@@ -37,21 +38,21 @@ my %wanted = (
 
    'Module::Metadata' => 0,
    'Module::Load'     => '0.12',
-   'Shell'            => 0,
+   'Switch'           => 0,
 
    'mro'              => '1.01',
    'strict'           => 0,
    'warnings'         => 0,
-  
+
    'perl'             => '5.008',
 );
- 
+
 is_deeply(
    $meta->{prereqs}{runtime}{requires},
    \%wanted,
    'no @Prereqs works',
 );
- 
+
 # Okay, add in the @Prereqs
 $tzil = Builder->from_config(
    { dist_root => 'corpus/dist' },
@@ -62,12 +63,12 @@ $tzil = Builder->from_config(
             [ '@Prereqs'     => { skip => '^DZPA::Skip' } ],
             [ 'Prereqs / RuntimeRequires'
                              => { 'Acme::Prereq::BigDistro::A' => '!= 0.00' } ],
-            [ MetaYAML       => { version => 2 } ],
+            [ 'MetaJSON' ],
          ),
       },
    },
 );
- 
+
 # check found prereqs
 $meta = build_meta($tzil);
 
@@ -81,7 +82,7 @@ $meta = build_meta($tzil);
   'Acme::Prereq::None'         => '0.01',
   'DZPA::NotInDist'            => '0',
   'Module::Metadata'           => '1.000000',
-  'Shell'                      => '0.72',
+  'Switch'                     => '2.14',
   'perl'                       => '5.010001'
 );
 

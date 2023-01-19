@@ -3,14 +3,12 @@ package Dist::Zilla::Plugin::PrereqsClean;
 # VERSION
 # ABSTRACT: Automatically cleans up the mess from other Prereq modules
 
-use sanity;
-
 use Moose;
 use MooseX::Types -declare => ['RemovalLevelInt'];
 use MooseX::Types::Moose qw/Int/;
 
 use Module::CoreList 3.10;  # (try to keep this one current)
-use List::AllUtils qw(min max part);
+use List::Util qw( max );
 use version 0.77;
 
 with 'Dist::Zilla::Role::PrereqSource';
@@ -183,18 +181,27 @@ sub register_prereqs {
 
          # hopefully, we can find a common name to use
          (my $main_module = $distro) =~ s/-/::/g;
-         $main_module = $modules[0] unless ($main_module ~~ @dmods);
+         $main_module = $modules[0] unless (grep $_ eq $main_module, @dmods);
 
          # remove any obvious split potentials
          if ($self->removal_level <= RL_DIST_NO_SPLIT) {
-            my ($non_ns, $new_mods) = part { /^\Q$main_module\E(?:\:\:|$)/ } @modules;
-            @modules = $new_mods ? @$new_mods : ();
+            my @non_ns;
+            my @new_mods;
+            for my $mod (@modules) {
+               if ($mod =~ /^\Q$main_module\E(?:\:\:|$)/) {
+                  push @new_mods, $mod;
+               }
+               else {
+                  push @non_ns, $mod;
+               }
+            }
+            @modules = @new_mods ? @new_mods : ();
 
             # Add split modules to a "new" distro for further processing
             # (This will clean up both Dist::A::* and Dist::B::* from Dist-A)
-            if ($non_ns && $new_mods) {
-               @$non_ns = sort { length($a) <=> length($b) } @$non_ns;
-               unshift @distros, [ $non_ns->[0], @$non_ns ];
+            if (@non_ns && @new_mods) {
+               @non_ns = sort { length($a) <=> length($b) } @non_ns;
+               unshift @distros, [ $non_ns[0], @non_ns ];
             }
 
             if (@modules <= 1) {

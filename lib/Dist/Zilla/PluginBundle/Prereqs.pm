@@ -3,11 +3,10 @@ package Dist::Zilla::PluginBundle::Prereqs;
 # VERSION
 # ABSTRACT: Useful Prereqs modules in a Dist::Zilla bundle
 
-use sanity;
 use Moose;
 
 with 'Dist::Zilla::Role::PluginBundle::Merged' => { mv_plugins => [qw( AutoPrereqs MinimumPerl )] };
- 
+
 sub configure { shift->add_merged( qw[ AutoPrereqs MinimumPerl MinimumPrereqs PrereqsClean ] ); }
 
 __PACKAGE__->meta->make_immutable;
@@ -18,7 +17,7 @@ __END__
 =begin wikidoc
 
 = SYNOPSIS
- 
+
    ; Instead of this...
    [AutoPrereqs]
    skip = ^Foo|Bar$
@@ -35,7 +34,7 @@ __END__
    minimum_year = 2008
    minimum_perl = 5.8.8
    removal_level = 2
-   
+
    ; and potentially put some manual entries afterwards...
    [Prereqs]
    ; ...
@@ -47,7 +46,7 @@ __END__
    ; ...
 
 = DESCRIPTION
- 
+
 This is a handy [Dist::Zilla] plugin bundle that ties together several useful Prereq
 plugins:
 

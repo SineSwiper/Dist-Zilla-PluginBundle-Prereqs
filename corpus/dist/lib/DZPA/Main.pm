@@ -23,7 +23,7 @@ use Module::Metadata;
 
 # core deprecated module
 # (or removed; same result either way)
-use Shell;
+use Switch;
 
 # Modules that exist in CPAN with a similar namespace,
 # but are separate distributions
