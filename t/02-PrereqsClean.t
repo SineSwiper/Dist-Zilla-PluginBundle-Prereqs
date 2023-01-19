@@ -1,6 +1,7 @@
-use sanity;
-use Test::Most tests => 10;
- 
+use strict;
+use warnings;
+use Test::More tests => 10;
+use Test::Fatal qw(lives_ok);
 use Test::DZil;
 use JSON::PP qw(decode_json);
 

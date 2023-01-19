@@ -3,7 +3,6 @@ package Dist::Zilla::PluginBundle::Prereqs;
 # VERSION
 # ABSTRACT: Useful Prereqs modules in a Dist::Zilla bundle
 
-use sanity;
 use Moose;
 
 with 'Dist::Zilla::Role::PluginBundle::Merged' => { mv_plugins => [qw( AutoPrereqs MinimumPerl )] };
