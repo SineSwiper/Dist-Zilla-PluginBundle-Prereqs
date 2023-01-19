@@ -2,13 +2,13 @@ use sanity;
 use Test::Most tests => 4;
  
 use Test::DZil;
-use YAML::Tiny;
+use JSON::PP qw(decode_json);
 
 sub build_meta {
    my $tzil = shift;
    $tzil->chrome->logger->set_debug(1);
    lives_ok(sub { $tzil->build }, 'built distro') || explain $tzil->log_messages;
-   YAML::Tiny->new->read($tzil->tempdir->file('build/META.yml'))->[0];
+   decode_json($tzil->built_in->child('META.json')->slurp_raw);
 }
 
 my $tzil = Builder->from_config(
@@ -62,7 +62,7 @@ $tzil = Builder->from_config(
             [ '@Prereqs'     => { skip => '^DZPA::Skip' } ],
             [ 'Prereqs / RuntimeRequires'
                              => { 'Acme::Prereq::BigDistro::A' => '!= 0.00' } ],
-            [ MetaYAML       => { version => 2 } ],
+            [ 'MetaJSON' ],
          ),
       },
    },
