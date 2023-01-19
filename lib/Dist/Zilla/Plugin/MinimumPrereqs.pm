@@ -25,19 +25,19 @@ sub register_prereqs {
 
    # Find the lowest required dependencies
    $self->log("Searching for minimum dependency versions");
-   
+
    foreach my $phase (qw(configure runtime build test)) {
       $self->logger->set_prefix("{Phase '$phase'} ");
       foreach my $relationship (qw(requires recommends suggests)) {
          my $req = $prereqs->requirements_for($phase, $relationship);
-         
+
          foreach my $module ( sort ($req->required_modules) ) {
             next if $module eq 'perl';  # obvious
 
             $req->requirements_for_module($module) and next;  # bounce if there is a version string
             my $minver = $self->_mcpan_module_minrelease($module);
             next unless $minver;
-            
+
             $self->log_debug(['Found minimum dep version for Module %s %s', $module, $minver]);
             $req->add_minimum( $module => $minver );
          }
@@ -49,13 +49,13 @@ sub register_prereqs {
 sub _mcpan_module_minrelease {
    my ($self, $module, $try_harder) = @_;
    my $year = $self->minimum_year;
-  
+
    my %search_params = (
       sort   => 'date',
       fields => 'date,distribution,module.version,module.name',
-      size   => $try_harder ? 20 : 1,   
+      size   => $try_harder ? 20 : 1,
    );
-  
+
    ### XXX: This should be replaced with a ->file() method when those
    ### two pull requests of mine are put into CPAN...
    $search_params{q} = join(' AND ', 'module.name:"'.$module.'"', 'maturity:released', 'module.authorized:true', "date:[$year TO 2099]");
@@ -66,8 +66,8 @@ sub _mcpan_module_minrelease {
       # it's possible that the minimum year is too high for this module
       $search_params{q} = join(' AND ', 'module.name:"'.$module.'"', 'maturity:released', 'module.authorized:true');
       $search_params{sort} = 'date:desc';
-      $details = $self->mcpan->fetch( "file/_search", %search_params );      
-      
+      $details = $self->mcpan->fetch( "file/_search", %search_params );
+
       unless ($details && $details->{hits}{total}) {
          $self->log("??? MetaCPAN can't even find a good version for $module!");
          return undef;
@@ -83,7 +83,7 @@ sub _mcpan_module_minrelease {
       # (ie: we shouldn't have multiples of modules or versions, and sort should actually have a value)
       $is_bad = !$hit->{sort}[0] || ref $hit->{fields}{'module.name'} || ref $hit->{fields}{'module.version'};
    } while ($is_bad and @hits);
-   
+
    if ($is_bad) {
       if ($try_harder) {
          $self->log("??? MetaCPAN is highly confused about $module!");
@@ -92,7 +92,7 @@ sub _mcpan_module_minrelease {
       $self->log_debug("   MetaCPAN got confused; trying harder...");
       return $self->_mcpan_module_minrelease($module, 1)
    }
-   
+
    return $hit->{fields}{'module.version'};
 }
 

@@ -3,22 +3,22 @@ use Test::Most tests => 4;
  
 use Test::DZil;
 use YAML::Tiny;
- 
+
 sub build_meta {
    my $tzil = shift;
    $tzil->chrome->logger->set_debug(1);
    lives_ok(sub { $tzil->build }, 'built distro') || explain $tzil->log_messages;
    YAML::Tiny->new->read($tzil->tempdir->file('build/META.yml'))->[0];
 }
- 
+
 my $tzil = Builder->from_config(
    { dist_root => 'corpus/dist' },
    { },
 );
- 
+
 # check found prereqs
 my $meta = build_meta($tzil);
- 
+
 my %wanted = (
    'Acme::Prereq::A'                    => 0,
    'Acme::Prereq::AnotherNS'            => 0,
@@ -42,16 +42,16 @@ my %wanted = (
    'mro'              => '1.01',
    'strict'           => 0,
    'warnings'         => 0,
-  
+
    'perl'             => '5.008',
 );
- 
+
 is_deeply(
    $meta->{prereqs}{runtime}{requires},
    \%wanted,
    'no @Prereqs works',
 );
- 
+
 # Okay, add in the @Prereqs
 $tzil = Builder->from_config(
    { dist_root => 'corpus/dist' },
@@ -67,7 +67,7 @@ $tzil = Builder->from_config(
       },
    },
 );
- 
+
 # check found prereqs
 $meta = build_meta($tzil);
 
